@@ -28,10 +28,7 @@
 </summary>
 <pre><code class="python">import json
 import re
-from random import sample
 from booru import __version__
-from xmltodict import parse
-from requests import get
 
 
 class Api:
@@ -157,30 +154,12 @@ def better_object(parser: dict):
     &#34;&#34;&#34;
     return json.dumps(parser, sort_keys=True, indent=4, ensure_ascii=False)
 
-def deserialize(data: list):
-    &#34;&#34;&#34;Deserialize instance containing a JSON document
-
-    Parameters
-    ----------
-    data : list
-        The raw data after fetch request
-
-    Returns
-    -------
-    str
-        The deserialized with better object
-    &#34;&#34;&#34;
-    return json.loads(better_object(data))
-
-
 def parse_image(raw_object: dict):
     &#34;&#34;&#34;Extracts the image url from the json object.
-
     Parameters
     ----------
     obj : dict
         The object to be parsed.
-
     Returns
     -------
     list
@@ -216,7 +195,7 @@ def get_hostname(url: str):
     return re.sub(r&#34;(.*://)?([^/?]+).*&#34;, &#34;\g&lt;1&gt;\g&lt;2&gt;&#34;, url)
 
 def resolve(b_object: dict) -&gt; dict:
-    &#34;&#34;&#34;Resolves the json object meant data with bad formatting, arbitary indent, arbitary sort keys but it is resolved and ready to extends
+    &#34;&#34;&#34;Resolves the json object.
 
     Parameters
     ----------
@@ -227,7 +206,35 @@ def resolve(b_object: dict) -&gt; dict:
     dict
         raw json object
     &#34;&#34;&#34;
-    return json.loads(b_object)</code></pre>
+    return json.loads(b_object)
+
+def parse_image_danbooru(raw_object: dict) -&gt; list:
+    &#34;&#34;&#34;Smh, it&#39;s danbooru though
+
+    Parameters
+    ----------
+    raw_object : dict
+        The object to be parsed.
+
+    Returns
+    -------
+    list
+        The list of image urls.
+    &#34;&#34;&#34;
+
+    image = []
+
+    try:
+        for i in raw_object:
+            image.append(i[&#34;file_url&#34;])
+        return image
+    except KeyError:
+        for i in raw_object:
+            try:
+                image.append(i[&#34;file_url&#34;])
+            except KeyError:
+                pass
+        return list(set(image))</code></pre>
 </details>
 </section>
 <section>
@@ -270,41 +277,6 @@ def resolve(b_object: dict) -&gt; dict:
 
     &#34;&#34;&#34;
     return json.dumps(parser, sort_keys=True, indent=4, ensure_ascii=False)</code></pre>
-</details>
-</dd>
-<dt id="booru.utils.parser.deserialize"><code class="name flex">
-<span>def <span class="ident">deserialize</span></span>(<span>data: list)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Deserialize instance containing a JSON document</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>data</code></strong> :&ensp;<code>list</code></dt>
-<dd>The raw data after fetch request</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>str</code></dt>
-<dd>The deserialized with better object</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def deserialize(data: list):
-    &#34;&#34;&#34;Deserialize instance containing a JSON document
-
-    Parameters
-    ----------
-    data : list
-        The raw data after fetch request
-
-    Returns
-    -------
-    str
-        The deserialized with better object
-    &#34;&#34;&#34;
-    return json.loads(better_object(data))</code></pre>
 </details>
 </dd>
 <dt id="booru.utils.parser.get_hostname"><code class="name flex">
@@ -391,8 +363,9 @@ def resolve(b_object: dict) -&gt; dict:
 <span>def <span class="ident">parse_image</span></span>(<span>raw_object: dict)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Extracts the image url from the json object.</p>
-<h2 id="parameters">Parameters</h2>
+<div class="desc"><p>Extracts the image url from the json object.
+Parameters</p>
+<hr>
 <dl>
 <dt><strong><code>obj</code></strong> :&ensp;<code>dict</code></dt>
 <dd>The object to be parsed.</dd>
@@ -408,12 +381,10 @@ def resolve(b_object: dict) -&gt; dict:
 </summary>
 <pre><code class="python">def parse_image(raw_object: dict):
     &#34;&#34;&#34;Extracts the image url from the json object.
-
     Parameters
     ----------
     obj : dict
         The object to be parsed.
-
     Returns
     -------
     list
@@ -434,11 +405,59 @@ def resolve(b_object: dict) -&gt; dict:
     return images</code></pre>
 </details>
 </dd>
+<dt id="booru.utils.parser.parse_image_danbooru"><code class="name flex">
+<span>def <span class="ident">parse_image_danbooru</span></span>(<span>raw_object: dict) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Smh, it's danbooru though</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>raw_object</code></strong> :&ensp;<code>dict</code></dt>
+<dd>The object to be parsed.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>The list of image urls.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse_image_danbooru(raw_object: dict) -&gt; list:
+    &#34;&#34;&#34;Smh, it&#39;s danbooru though
+
+    Parameters
+    ----------
+    raw_object : dict
+        The object to be parsed.
+
+    Returns
+    -------
+    list
+        The list of image urls.
+    &#34;&#34;&#34;
+
+    image = []
+
+    try:
+        for i in raw_object:
+            image.append(i[&#34;file_url&#34;])
+        return image
+    except KeyError:
+        for i in raw_object:
+            try:
+                image.append(i[&#34;file_url&#34;])
+            except KeyError:
+                pass
+        return list(set(image))</code></pre>
+</details>
+</dd>
 <dt id="booru.utils.parser.resolve"><code class="name flex">
 <span>def <span class="ident">resolve</span></span>(<span>b_object: dict) ‑> dict</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Resolves the json object meant data with bad formatting, arbitary indent, arbitary sort keys but it is resolved and ready to extends</p>
+<div class="desc"><p>Resolves the json object.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>b_object</code></strong> :&ensp;<code>dict</code></dt>
@@ -454,7 +473,7 @@ def resolve(b_object: dict) -&gt; dict:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def resolve(b_object: dict) -&gt; dict:
-    &#34;&#34;&#34;Resolves the json object meant data with bad formatting, arbitary indent, arbitary sort keys but it is resolved and ready to extends
+    &#34;&#34;&#34;Resolves the json object.
 
     Parameters
     ----------
@@ -623,12 +642,12 @@ def resolve(b_object: dict) -&gt; dict:
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="booru.utils.parser.better_object" href="#booru.utils.parser.better_object">better_object</a></code></li>
-<li><code><a title="booru.utils.parser.deserialize" href="#booru.utils.parser.deserialize">deserialize</a></code></li>
 <li><code><a title="booru.utils.parser.get_hostname" href="#booru.utils.parser.get_hostname">get_hostname</a></code></li>
 <li><code><a title="booru.utils.parser.list_api" href="#booru.utils.parser.list_api">list_api</a></code></li>
 <li><code><a title="booru.utils.parser.parse_image" href="#booru.utils.parser.parse_image">parse_image</a></code></li>
+<li><code><a title="booru.utils.parser.parse_image_danbooru" href="#booru.utils.parser.parse_image_danbooru">parse_image_danbooru</a></code></li>
 <li><code><a title="booru.utils.parser.resolve" href="#booru.utils.parser.resolve">resolve</a></code></li>
 </ul>
 </li>
