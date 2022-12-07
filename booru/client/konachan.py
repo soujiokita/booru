@@ -1,27 +1,27 @@
-import requests
-import json
 import re
-from ..utils.parser import Api, better_object, parse_image, get_hostname, deserialize
+import aiohttp
+from typing import Union
+from ..utils.parser import Api, better_object, parse_image, get_hostname
 from random import shuffle, randint
 
 Booru = Api()
 
 
 class Konachan(object):
-    """Konachan wrapper
+    """Konachan Client
 
     Methods
     -------
     search : function
         Search and gets images from konachan.
 
-    get_image : function
+    search_image : function
         Gets images, image urls only from konachan.
 
     """
 
     @staticmethod
-    def append_obj(raw_object: dict):
+    def append_object(raw_object: dict):
         """Extends new object to the raw dict
 
         Parameters
@@ -48,110 +48,121 @@ class Konachan(object):
     async def search(
         self,
         query: str,
+        block: str = "",
         limit: int = 100,
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ):
+    ) -> Union[aiohttp.ClientResponse, str]:
 
-        """Search and gets images from konachan.
+        """Search method
 
         Parameters
         ----------
         query : str
             The query to search for.
-
+        block : str
+            The tags you want to block, separated by space.
         limit : int
-            The limit of images to return.
-
+            Expected number which is from pages
         page : int
-            The number of desired page
-
+            Expected number of page.
         random : bool
             Shuffle the whole dict, default is True.
-
         gacha : bool
             Get random single object, limit property will be ignored.
 
         Returns
         -------
         dict
-            The json object returned by konachan.
+            The json object (as string, you may need booru.resolve())
         """
-        if gacha:
-            limit = 100
-
         if limit > 1000:
             raise ValueError(Booru.error_handling_limit)
 
-        else:
-            self.query = query
+        elif block and re.findall(block, query):
+            raise ValueError(Booru.error_handling_sameval)
 
-        self.specs["tags"] = str(self.query)
-        self.specs["limit"] = str(limit)
-        self.specs["page"] = str(page)
+        self.query = query
+        self.specs["tags"] = self.query
+        self.specs["limit"] = limit
+        self.specs["page"] = page
 
-        self.data = requests.get(Booru.konachan, params=self.specs)
-        self.final = self.final = deserialize(self.data.json())
+        async with aiohttp.ClientSession() as session:
+            async with session.get(Booru.konachan, params=self.specs) as resp:
+                self.data = await resp.json(content_type=None)
+                if not self.data:
+                    raise ValueError(Booru.error_handling_null)
 
-        if not self.final:
-            raise ValueError(Booru.error_handling_null)
+                self.final = self.data
+                for i in range(len(self.final)):
+                    self.final[i]["tags"] = self.final[i]["tags"].split(" ")
 
-        self.not_random = Konachan.append_obj(self.final)
-        shuffle(self.not_random)
+                self.final = [
+                    i for i in self.final if not any(j in block for j in i["tags"])
+                ]
 
-        try:
-            if gacha:
-                return better_object(self.not_random[randint(0, len(self.not_random))])
+                self.not_random = Konachan.append_object(self.final)
+                shuffle(self.not_random)
 
-            elif random:
-                return better_object(self.not_random)
+                try:
+                    if gacha:
+                        return better_object(
+                            self.not_random[randint(0, len(self.not_random))]
+                        )
+                    elif random:
+                        return better_object(self.not_random)
+                    else:
+                        return better_object(Konachan.append_object(self.final))
 
-            else:
-                return better_object(Konachan.append_obj(self.final))
+                except Exception as e:
+                    raise ValueError(f"Failed to get data: {e}")
+                    
+    async def search_image(self, query: str, block: str = "", limit: int = 100, page: int = 1):
 
-        except Exception as e:
-            raise ValueError(f"Failed to get data: {e}")
-
-    async def get_image(self, query: str, limit: int = 100, page: int = 1):
-
-        """Gets images, meant just image urls from konachan.
+        """Parses image only
 
         Parameters
         ----------
         query : str
             The query to search for.
-
+        block : str
+            The tags you want to block, separated by space.
         limit : int
-            The limit of images to return.
-
+            Expected number which is from pages
         page : int
-            The number of desired page
+            Expected number of page.
 
         Returns
         -------
         dict
-            The json object returned by konachan.
+            The json object (as string, you may need booru.resolve())
 
         """
-
         if limit > 1000:
             raise ValueError(Booru.error_handling_limit)
 
-        else:
-            self.query = query
+        elif block and re.findall(block, query):
+            raise ValueError(Booru.error_handling_sameval)
 
-        self.specs["tags"] = str(self.query)
-        self.specs["limit"] = str(limit)
-        self.specs["page"] = str(page)
+        self.query = query
+        self.specs["tags"] = self.query
+        self.specs["limit"] = limit
+        self.specs["page"] = page
 
         try:
-            self.data = requests.get(Booru.konachan, params=self.specs)
-            self.final = self.final = deserialize(self.data.json())
+            async with aiohttp.ClientSession() as session:
+                async with session.get(Booru.konachan, params=self.specs) as resp:
+                    self.data = await resp.json(content_type=None)
+                    self.final = self.data
+                    for i in range(len(self.final)):
+                        self.final[i]["tags"] = self.final[i]["tags"].split(" ")
 
-            self.not_random = parse_image(self.final)
-            shuffle(self.not_random)
-            return better_object(self.not_random)
+                    self.final = [i for i in self.final if not any(j in block for j in i["tags"])]
 
-        except:
-            raise ValueError(f"Failed to get data")
+                    self.not_random = parse_image(self.final)
+                    shuffle(self.not_random)
+                    return better_object(self.not_random)
+
+        except Exception as e:
+            raise ValueError(f"Failed to get data: {e}")

@@ -1,9 +1,6 @@
 import json
 import re
-from random import sample
 from booru import __version__
-from xmltodict import parse
-from requests import get
 
 
 class Api:
@@ -129,30 +126,12 @@ def better_object(parser: dict):
     """
     return json.dumps(parser, sort_keys=True, indent=4, ensure_ascii=False)
 
-def deserialize(data: list):
-    """Deserialize instance containing a JSON document
-
-    Parameters
-    ----------
-    data : list
-        The raw data after fetch request
-
-    Returns
-    -------
-    str
-        The deserialized with better object
-    """
-    return json.loads(better_object(data))
-
-
 def parse_image(raw_object: dict):
     """Extracts the image url from the json object.
-
     Parameters
     ----------
     obj : dict
         The object to be parsed.
-
     Returns
     -------
     list
@@ -188,7 +167,7 @@ def get_hostname(url: str):
     return re.sub(r"(.*://)?([^/?]+).*", "\g<1>\g<2>", url)
 
 def resolve(b_object: dict) -> dict:
-    """Resolves the json object meant data with bad formatting, arbitary indent, arbitary sort keys but it is resolved and ready to extends
+    """Resolves the json object.
 
     Parameters
     ----------
@@ -200,3 +179,31 @@ def resolve(b_object: dict) -> dict:
         raw json object
     """
     return json.loads(b_object)
+
+def parse_image_danbooru(raw_object: dict) -> list:
+    """Smh, it's danbooru though
+
+    Parameters
+    ----------
+    raw_object : dict
+        The object to be parsed.
+
+    Returns
+    -------
+    list
+        The list of image urls.
+    """
+
+    image = []
+
+    try:
+        for i in raw_object:
+            image.append(i["file_url"])
+        return image
+    except KeyError:
+        for i in raw_object:
+            try:
+                image.append(i["file_url"])
+            except KeyError:
+                pass
+        return list(set(image))
