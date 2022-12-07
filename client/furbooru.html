@@ -141,11 +141,15 @@ class Furbooru(object):
 
                 try:
                     if gacha:
-                        return better_object(self.not_random[randint(0, len(self.not_random))])
+                        return better_object(
+                            self.not_random[randint(0, len(self.not_random))]
+                        )
                     elif random:
                         return better_object(self.not_random)
                     else:
-                        return better_object(Furbooru.append_object(self.final[&#34;images&#34;]))
+                        return better_object(
+                            Furbooru.append_object(self.final[&#34;images&#34;])
+                        )
 
                 except Exception as e:
                     raise Exception(f&#34;Failed to get data: {e}&#34;)
@@ -174,7 +178,6 @@ class Furbooru(object):
 
         if limit &gt; 1000:
             raise ValueError(Booru.error_handling_limit)
-
 
         self.query = query
         self.specs[&#34;q&#34;] = self.query
@@ -335,11 +338,15 @@ Gets images, image urls only from furbooru.</p>
 
                 try:
                     if gacha:
-                        return better_object(self.not_random[randint(0, len(self.not_random))])
+                        return better_object(
+                            self.not_random[randint(0, len(self.not_random))]
+                        )
                     elif random:
                         return better_object(self.not_random)
                     else:
-                        return better_object(Furbooru.append_object(self.final[&#34;images&#34;]))
+                        return better_object(
+                            Furbooru.append_object(self.final[&#34;images&#34;])
+                        )
 
                 except Exception as e:
                     raise Exception(f&#34;Failed to get data: {e}&#34;)
@@ -368,7 +375,6 @@ Gets images, image urls only from furbooru.</p>
 
         if limit &gt; 1000:
             raise ValueError(Booru.error_handling_limit)
-
 
         self.query = query
         self.specs[&#34;q&#34;] = self.query
@@ -521,11 +527,15 @@ def append_object(raw_object: dict):
 
             try:
                 if gacha:
-                    return better_object(self.not_random[randint(0, len(self.not_random))])
+                    return better_object(
+                        self.not_random[randint(0, len(self.not_random))]
+                    )
                 elif random:
                     return better_object(self.not_random)
                 else:
-                    return better_object(Furbooru.append_object(self.final[&#34;images&#34;]))
+                    return better_object(
+                        Furbooru.append_object(self.final[&#34;images&#34;])
+                    )
 
             except Exception as e:
                 raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
@@ -578,7 +588,6 @@ def append_object(raw_object: dict):
 
     if limit &gt; 1000:
         raise ValueError(Booru.error_handling_limit)
-
 
     self.query = query
     self.specs[&#34;q&#34;] = self.query

@@ -27,11 +27,10 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import re
-import aiohttp
 from typing import Union
 from ..utils.fetch import request, roll
 from ..utils.constant import Api, better_object, parse_image, get_hostname
-from random import shuffle, randint
+from random import shuffle
 
 Booru = Api()
 
@@ -39,7 +38,7 @@ Booru = Api()
 
 
 class Behoimi(object):
-    &#34;&#34;&#34;3d booru / Behoimi wrapper
+    &#34;&#34;&#34;3d booru / Behoimi Client
 
     Methods
     -------
@@ -47,15 +46,9 @@ class Behoimi(object):
         Search and gets images from behoimi.
 
     search_image : function
-        Gets images, image urls only from behoimi.
+        Search and gets images from behoimi, but only returns image.
 
     &#34;&#34;&#34;
-
-    @staticmethod
-    async def mock(site: str, params: dict):
-        async with aiohttp.ClientSession(headers=Booru.behoimi_bypass) as session:
-            async with session.get(site, params=params) as resp:
-                return await resp.json()
 
     @staticmethod
     def append_object(raw_object: dict):
@@ -90,7 +83,7 @@ class Behoimi(object):
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search and gets images from behoimi.
 
@@ -98,19 +91,14 @@ class Behoimi(object):
         ----------
         query : str
             The query to search for.
-
         block : str
             The tags to block.
-
         limit : int
             The limit of images to return.
-
         page : int
             The number of desired page
-
         random : bool
             Shuffle the whole dict, default is True.
-
         gacha : bool
             Get random single object, limit property will be ignored.
 
@@ -132,7 +120,7 @@ class Behoimi(object):
 
         raw_data = await request(site=Booru.behoimi, params_x=self.specs, block=block)
         self.appended = Behoimi.append_object(raw_data)
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -146,7 +134,7 @@ class Behoimi(object):
 
     async def search_image(
         self, query: str, block=&#34;&#34;, limit: int = 100, page: int = 1
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Gets images, meant just image urls from behoimi.
 
@@ -154,13 +142,10 @@ class Behoimi(object):
         ----------
         query : str
             The query to search for.
-
         block : str
             The tags to block.
-
         limit : int
             The limit of images to return.
-
         page : int
             The number of desired page
 
@@ -204,18 +189,18 @@ class Behoimi(object):
 <span>class <span class="ident">Behoimi</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>3d booru / Behoimi wrapper</p>
+<div class="desc"><p>3d booru / Behoimi Client</p>
 <h2 id="methods">Methods</h2>
 <p>search : function
 Search and gets images from behoimi.</p>
 <p>search_image : function
-Gets images, image urls only from behoimi.</p></div>
+Search and gets images from behoimi, but only returns image.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Behoimi(object):
-    &#34;&#34;&#34;3d booru / Behoimi wrapper
+    &#34;&#34;&#34;3d booru / Behoimi Client
 
     Methods
     -------
@@ -223,15 +208,9 @@ Gets images, image urls only from behoimi.</p></div>
         Search and gets images from behoimi.
 
     search_image : function
-        Gets images, image urls only from behoimi.
+        Search and gets images from behoimi, but only returns image.
 
     &#34;&#34;&#34;
-
-    @staticmethod
-    async def mock(site: str, params: dict):
-        async with aiohttp.ClientSession(headers=Booru.behoimi_bypass) as session:
-            async with session.get(site, params=params) as resp:
-                return await resp.json()
 
     @staticmethod
     def append_object(raw_object: dict):
@@ -266,7 +245,7 @@ Gets images, image urls only from behoimi.</p></div>
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search and gets images from behoimi.
 
@@ -274,19 +253,14 @@ Gets images, image urls only from behoimi.</p></div>
         ----------
         query : str
             The query to search for.
-
         block : str
             The tags to block.
-
         limit : int
             The limit of images to return.
-
         page : int
             The number of desired page
-
         random : bool
             Shuffle the whole dict, default is True.
-
         gacha : bool
             Get random single object, limit property will be ignored.
 
@@ -308,7 +282,7 @@ Gets images, image urls only from behoimi.</p></div>
 
         raw_data = await request(site=Booru.behoimi, params_x=self.specs, block=block)
         self.appended = Behoimi.append_object(raw_data)
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -322,7 +296,7 @@ Gets images, image urls only from behoimi.</p></div>
 
     async def search_image(
         self, query: str, block=&#34;&#34;, limit: int = 100, page: int = 1
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Gets images, meant just image urls from behoimi.
 
@@ -330,13 +304,10 @@ Gets images, image urls only from behoimi.</p></div>
         ----------
         query : str
             The query to search for.
-
         block : str
             The tags to block.
-
         limit : int
             The limit of images to return.
-
         page : int
             The number of desired page
 
@@ -410,27 +381,11 @@ def append_object(raw_object: dict):
     return raw_object</code></pre>
 </details>
 </dd>
-<dt id="booru.client.behoimi.Behoimi.mock"><code class="name flex">
-<span>async def <span class="ident">mock</span></span>(<span>site: str, params: dict)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-async def mock(site: str, params: dict):
-    async with aiohttp.ClientSession(headers=Booru.behoimi_bypass) as session:
-        async with session.get(site, params=params) as resp:
-            return await resp.json()</code></pre>
-</details>
-</dd>
 </dl>
 <h3>Methods</h3>
 <dl>
 <dt id="booru.client.behoimi.Behoimi.search"><code class="name flex">
-<span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[aiohttp.client_reqrep.ClientResponse, str]</span>
+<span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[list, str, ForwardRef(None)]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Search and gets images from behoimi.</p>
@@ -466,7 +421,7 @@ async def mock(site: str, params: dict):
     page: int = 1,
     random: bool = True,
     gacha: bool = False,
-) -&gt; Union[aiohttp.ClientResponse, str]:
+) -&gt; Union[list, str, None]:
 
     &#34;&#34;&#34;Search and gets images from behoimi.
 
@@ -474,19 +429,14 @@ async def mock(site: str, params: dict):
     ----------
     query : str
         The query to search for.
-
     block : str
         The tags to block.
-
     limit : int
         The limit of images to return.
-
     page : int
         The number of desired page
-
     random : bool
         Shuffle the whole dict, default is True.
-
     gacha : bool
         Get random single object, limit property will be ignored.
 
@@ -508,7 +458,7 @@ async def mock(site: str, params: dict):
 
     raw_data = await request(site=Booru.behoimi, params_x=self.specs, block=block)
     self.appended = Behoimi.append_object(raw_data)
-    
+
     try:
         if gacha:
             return better_object(roll(self.appended))
@@ -522,7 +472,7 @@ async def mock(site: str, params: dict):
 </details>
 </dd>
 <dt id="booru.client.behoimi.Behoimi.search_image"><code class="name flex">
-<span>async def <span class="ident">search_image</span></span>(<span>self, query: str, block='', limit: int = 100, page: int = 1) ‑> Union[aiohttp.client_reqrep.ClientResponse, str]</span>
+<span>async def <span class="ident">search_image</span></span>(<span>self, query: str, block='', limit: int = 100, page: int = 1) ‑> Union[list, str, ForwardRef(None)]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Gets images, meant just image urls from behoimi.</p>
@@ -548,7 +498,7 @@ async def mock(site: str, params: dict):
 </summary>
 <pre><code class="python">async def search_image(
     self, query: str, block=&#34;&#34;, limit: int = 100, page: int = 1
-) -&gt; Union[aiohttp.ClientResponse, str]:
+) -&gt; Union[list, str, None]:
 
     &#34;&#34;&#34;Gets images, meant just image urls from behoimi.
 
@@ -556,13 +506,10 @@ async def mock(site: str, params: dict):
     ----------
     query : str
         The query to search for.
-
     block : str
         The tags to block.
-
     limit : int
         The limit of images to return.
-
     page : int
         The number of desired page
 
@@ -615,7 +562,6 @@ async def mock(site: str, params: dict):
 <h4><code><a title="booru.client.behoimi.Behoimi" href="#booru.client.behoimi.Behoimi">Behoimi</a></code></h4>
 <ul class="">
 <li><code><a title="booru.client.behoimi.Behoimi.append_object" href="#booru.client.behoimi.Behoimi.append_object">append_object</a></code></li>
-<li><code><a title="booru.client.behoimi.Behoimi.mock" href="#booru.client.behoimi.Behoimi.mock">mock</a></code></li>
 <li><code><a title="booru.client.behoimi.Behoimi.search" href="#booru.client.behoimi.Behoimi.search">search</a></code></li>
 <li><code><a title="booru.client.behoimi.Behoimi.search_image" href="#booru.client.behoimi.Behoimi.search_image">search_image</a></code></li>
 </ul>

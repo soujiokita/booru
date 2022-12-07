@@ -27,11 +27,10 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import re
-import aiohttp
 from typing import Union
 from ..utils.fetch import request, roll
 from ..utils.constant import Api, better_object, parse_image_danbooru, get_hostname
-from random import shuffle, randint
+from random import shuffle
 
 Booru = Api()
 
@@ -45,7 +44,7 @@ class Danbooru(object):
         Search and gets images from danbooru.
 
     search_image : function
-        Gets images, image urls only from danbooru.
+        Search and gets images from danbooru, but only returns image.
 
     &#34;&#34;&#34;
 
@@ -83,7 +82,7 @@ class Danbooru(object):
             Your user ID, which is accessible on the account options/profile page.
         &#34;&#34;&#34;
 
-        if api_key ==&#34;&#34; and login == &#34;&#34;:
+        if api_key == &#34;&#34; and login == &#34;&#34;:
             self.api_key = None
             self.login = None
             self.specs = {}
@@ -91,8 +90,6 @@ class Danbooru(object):
             self.api_key = api_key
             self.login = login
             self.specs = {&#34;api_key&#34;: self.api_key, &#34;login&#34;: self.login}
-
-        
 
     async def search(
         self,
@@ -102,7 +99,7 @@ class Danbooru(object):
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search method
 
@@ -131,7 +128,7 @@ class Danbooru(object):
 
         elif block and re.findall(block, query):
             raise ValueError(Booru.error_handling_sameval)
-            
+
         self.query = query
         self.specs[&#34;tags&#34;] = self.query
         self.specs[&#34;limit&#34;] = limit
@@ -139,7 +136,7 @@ class Danbooru(object):
 
         raw_data = await request(site=Booru.danbooru, params_x=self.specs, block=block)
         self.appended = Danbooru.append_object(raw_data)
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -172,7 +169,6 @@ class Danbooru(object):
         -------
         dict
             The json object (as string, you may need booru.resolve())
-
         &#34;&#34;&#34;
 
         if limit &gt; 1000:
@@ -214,7 +210,7 @@ class Danbooru(object):
 <p>search : function
 Search and gets images from danbooru.</p>
 <p>search_image : function
-Gets images, image urls only from danbooru.</p>
+Search and gets images from danbooru, but only returns image.</p>
 <p>Initializes danbooru.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -236,7 +232,7 @@ Gets images, image urls only from danbooru.</p>
         Search and gets images from danbooru.
 
     search_image : function
-        Gets images, image urls only from danbooru.
+        Search and gets images from danbooru, but only returns image.
 
     &#34;&#34;&#34;
 
@@ -274,7 +270,7 @@ Gets images, image urls only from danbooru.</p>
             Your user ID, which is accessible on the account options/profile page.
         &#34;&#34;&#34;
 
-        if api_key ==&#34;&#34; and login == &#34;&#34;:
+        if api_key == &#34;&#34; and login == &#34;&#34;:
             self.api_key = None
             self.login = None
             self.specs = {}
@@ -282,8 +278,6 @@ Gets images, image urls only from danbooru.</p>
             self.api_key = api_key
             self.login = login
             self.specs = {&#34;api_key&#34;: self.api_key, &#34;login&#34;: self.login}
-
-        
 
     async def search(
         self,
@@ -293,7 +287,7 @@ Gets images, image urls only from danbooru.</p>
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search method
 
@@ -322,7 +316,7 @@ Gets images, image urls only from danbooru.</p>
 
         elif block and re.findall(block, query):
             raise ValueError(Booru.error_handling_sameval)
-            
+
         self.query = query
         self.specs[&#34;tags&#34;] = self.query
         self.specs[&#34;limit&#34;] = limit
@@ -330,7 +324,7 @@ Gets images, image urls only from danbooru.</p>
 
         raw_data = await request(site=Booru.danbooru, params_x=self.specs, block=block)
         self.appended = Danbooru.append_object(raw_data)
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -363,7 +357,6 @@ Gets images, image urls only from danbooru.</p>
         -------
         dict
             The json object (as string, you may need booru.resolve())
-
         &#34;&#34;&#34;
 
         if limit &gt; 1000:
@@ -433,7 +426,7 @@ def append_object(raw_object: dict):
 <h3>Methods</h3>
 <dl>
 <dt id="booru.client.danbooru.Danbooru.search"><code class="name flex">
-<span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[aiohttp.client_reqrep.ClientResponse, str]</span>
+<span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[list, str, ForwardRef(None)]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Search method</p>
@@ -469,7 +462,7 @@ def append_object(raw_object: dict):
     page: int = 1,
     random: bool = True,
     gacha: bool = False,
-) -&gt; Union[aiohttp.ClientResponse, str]:
+) -&gt; Union[list, str, None]:
 
     &#34;&#34;&#34;Search method
 
@@ -498,7 +491,7 @@ def append_object(raw_object: dict):
 
     elif block and re.findall(block, query):
         raise ValueError(Booru.error_handling_sameval)
-        
+
     self.query = query
     self.specs[&#34;tags&#34;] = self.query
     self.specs[&#34;limit&#34;] = limit
@@ -506,7 +499,7 @@ def append_object(raw_object: dict):
 
     raw_data = await request(site=Booru.danbooru, params_x=self.specs, block=block)
     self.appended = Danbooru.append_object(raw_data)
-    
+
     try:
         if gacha:
             return better_object(roll(self.appended))
@@ -565,7 +558,6 @@ def append_object(raw_object: dict):
     -------
     dict
         The json object (as string, you may need booru.resolve())
-
     &#34;&#34;&#34;
 
     if limit &gt; 1000:

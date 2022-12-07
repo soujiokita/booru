@@ -27,7 +27,6 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import re
-import aiohttp
 from typing import Union
 from ..utils.fetch import request, roll
 from ..utils.constant import Api, better_object, parse_image_danbooru, get_hostname
@@ -45,7 +44,7 @@ class Atfbooru(object):
         Search and gets images from atfbooru.
 
     search_image : function
-        Gets images, image urls only from atfbooru.
+        Search and gets images from atfbooru, but only returns image.
 
     &#34;&#34;&#34;
 
@@ -78,7 +77,6 @@ class Atfbooru(object):
         ----------
         api_key : str
             Your API Key which is accessible within your account options page
-
         user_id : str
             Your user ID, which is accessible on the account options/profile page.
         &#34;&#34;&#34;
@@ -100,7 +98,7 @@ class Atfbooru(object):
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search method
 
@@ -129,7 +127,7 @@ class Atfbooru(object):
 
         elif block and re.findall(block, query):
             raise ValueError(Booru.error_handling_sameval)
-            
+
         self.query = query
         self.specs[&#34;tags&#34;] = self.query
         self.specs[&#34;limit&#34;] = limit
@@ -137,7 +135,7 @@ class Atfbooru(object):
 
         raw_data = await request(site=Booru.atfbooru, params_x=self.specs, block=block)
         self.appended = Atfbooru.append_object(raw_data)
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -212,7 +210,7 @@ class Atfbooru(object):
 <p>search : function
 Search and gets images from atfbooru.</p>
 <p>search_image : function
-Gets images, image urls only from atfbooru.</p>
+Search and gets images from atfbooru, but only returns image.</p>
 <p>Initializes atfbooru.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -234,7 +232,7 @@ Gets images, image urls only from atfbooru.</p>
         Search and gets images from atfbooru.
 
     search_image : function
-        Gets images, image urls only from atfbooru.
+        Search and gets images from atfbooru, but only returns image.
 
     &#34;&#34;&#34;
 
@@ -267,7 +265,6 @@ Gets images, image urls only from atfbooru.</p>
         ----------
         api_key : str
             Your API Key which is accessible within your account options page
-
         user_id : str
             Your user ID, which is accessible on the account options/profile page.
         &#34;&#34;&#34;
@@ -289,7 +286,7 @@ Gets images, image urls only from atfbooru.</p>
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search method
 
@@ -318,7 +315,7 @@ Gets images, image urls only from atfbooru.</p>
 
         elif block and re.findall(block, query):
             raise ValueError(Booru.error_handling_sameval)
-            
+
         self.query = query
         self.specs[&#34;tags&#34;] = self.query
         self.specs[&#34;limit&#34;] = limit
@@ -326,7 +323,7 @@ Gets images, image urls only from atfbooru.</p>
 
         raw_data = await request(site=Booru.atfbooru, params_x=self.specs, block=block)
         self.appended = Atfbooru.append_object(raw_data)
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -429,7 +426,7 @@ def append_object(raw_object: dict):
 <h3>Methods</h3>
 <dl>
 <dt id="booru.client.atfbooru.Atfbooru.search"><code class="name flex">
-<span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[aiohttp.client_reqrep.ClientResponse, str]</span>
+<span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[list, str, ForwardRef(None)]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Search method</p>
@@ -465,7 +462,7 @@ def append_object(raw_object: dict):
     page: int = 1,
     random: bool = True,
     gacha: bool = False,
-) -&gt; Union[aiohttp.ClientResponse, str]:
+) -&gt; Union[list, str, None]:
 
     &#34;&#34;&#34;Search method
 
@@ -494,7 +491,7 @@ def append_object(raw_object: dict):
 
     elif block and re.findall(block, query):
         raise ValueError(Booru.error_handling_sameval)
-        
+
     self.query = query
     self.specs[&#34;tags&#34;] = self.query
     self.specs[&#34;limit&#34;] = limit
@@ -502,7 +499,7 @@ def append_object(raw_object: dict):
 
     raw_data = await request(site=Booru.atfbooru, params_x=self.specs, block=block)
     self.appended = Atfbooru.append_object(raw_data)
-    
+
     try:
         if gacha:
             return better_object(roll(self.appended))

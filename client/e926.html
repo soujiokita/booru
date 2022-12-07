@@ -26,11 +26,10 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import aiohttp
-from typing import Union
+<pre><code class="python">from typing import Union
 from ..utils.fetch import request, roll
 from ..utils.constant import Api, better_object, parse_image, get_hostname
-from random import shuffle, randint
+from random import shuffle
 
 Booru = Api()
 
@@ -44,7 +43,7 @@ class E926(object):
         Search and gets images from e926.
 
     search_image : function
-        Gets images, meant just image urls from e926.
+        Search and gets images from e926, but only returns image.
 
     &#34;&#34;&#34;
 
@@ -76,10 +75,10 @@ class E926(object):
         Parameters
         ----------
         api_key : str
-            Your API Key which is accessible within your account options page
+            Your API Key (If possible)
 
         user_id : str
-            Your user ID, which is accessible on the account options/profile page.
+            Your user ID (If possible)
         &#34;&#34;&#34;
 
         if api_key and user_id == &#34;&#34;:
@@ -98,7 +97,7 @@ class E926(object):
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search and gets images from e926.
 
@@ -124,20 +123,18 @@ class E926(object):
         dict
             The json object returned by e926.
         &#34;&#34;&#34;
-        if gacha:
-            limit = 100
+
         if limit &gt; 1000:
             raise ValueError(Booru.error_handling_limit)
-        else:
-            self.query = query
 
+        self.query = query
         self.specs[&#34;tags&#34;] = self.query
         self.specs[&#34;limit&#34;] = limit
         self.specs[&#34;page&#34;] = page
 
         raw_data = await request(site=Booru.e926, params_x=self.specs, block=&#34;&#34;)
         self.appended = E926.append_object(raw_data[&#34;posts&#34;])
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -151,7 +148,7 @@ class E926(object):
 
     async def search_image(
         self, query: str, limit: int = 100, page: int = 1
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Gets images, meant just image urls from e926.
 
@@ -175,7 +172,6 @@ class E926(object):
 
         if limit &gt; 1000:
             raise ValueError(Booru.error_handling_limit)
-
 
         self.query = query
         self.specs[&#34;tags&#34;] = self.query
@@ -211,14 +207,14 @@ class E926(object):
 <p>search : function
 Search and gets images from e926.</p>
 <p>search_image : function
-Gets images, meant just image urls from e926.</p>
+Search and gets images from e926, but only returns image.</p>
 <p>Initializes e926.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>api_key</code></strong> :&ensp;<code>str</code></dt>
-<dd>Your API Key which is accessible within your account options page</dd>
+<dd>Your API Key (If possible)</dd>
 <dt><strong><code>user_id</code></strong> :&ensp;<code>str</code></dt>
-<dd>Your user ID, which is accessible on the account options/profile page.</dd>
+<dd>Your user ID (If possible)</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -233,7 +229,7 @@ Gets images, meant just image urls from e926.</p>
         Search and gets images from e926.
 
     search_image : function
-        Gets images, meant just image urls from e926.
+        Search and gets images from e926, but only returns image.
 
     &#34;&#34;&#34;
 
@@ -265,10 +261,10 @@ Gets images, meant just image urls from e926.</p>
         Parameters
         ----------
         api_key : str
-            Your API Key which is accessible within your account options page
+            Your API Key (If possible)
 
         user_id : str
-            Your user ID, which is accessible on the account options/profile page.
+            Your user ID (If possible)
         &#34;&#34;&#34;
 
         if api_key and user_id == &#34;&#34;:
@@ -287,7 +283,7 @@ Gets images, meant just image urls from e926.</p>
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search and gets images from e926.
 
@@ -313,20 +309,18 @@ Gets images, meant just image urls from e926.</p>
         dict
             The json object returned by e926.
         &#34;&#34;&#34;
-        if gacha:
-            limit = 100
+
         if limit &gt; 1000:
             raise ValueError(Booru.error_handling_limit)
-        else:
-            self.query = query
 
+        self.query = query
         self.specs[&#34;tags&#34;] = self.query
         self.specs[&#34;limit&#34;] = limit
         self.specs[&#34;page&#34;] = page
 
         raw_data = await request(site=Booru.e926, params_x=self.specs, block=&#34;&#34;)
         self.appended = E926.append_object(raw_data[&#34;posts&#34;])
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -340,7 +334,7 @@ Gets images, meant just image urls from e926.</p>
 
     async def search_image(
         self, query: str, limit: int = 100, page: int = 1
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Gets images, meant just image urls from e926.
 
@@ -364,7 +358,6 @@ Gets images, meant just image urls from e926.</p>
 
         if limit &gt; 1000:
             raise ValueError(Booru.error_handling_limit)
-
 
         self.query = query
         self.specs[&#34;tags&#34;] = self.query
@@ -428,7 +421,7 @@ def append_object(raw_object: dict):
 <h3>Methods</h3>
 <dl>
 <dt id="booru.client.e926.E926.search"><code class="name flex">
-<span>async def <span class="ident">search</span></span>(<span>self, query: str, limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[aiohttp.client_reqrep.ClientResponse, str]</span>
+<span>async def <span class="ident">search</span></span>(<span>self, query: str, limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[list, str, ForwardRef(None)]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Search and gets images from e926.</p>
@@ -461,7 +454,7 @@ def append_object(raw_object: dict):
     page: int = 1,
     random: bool = True,
     gacha: bool = False,
-) -&gt; Union[aiohttp.ClientResponse, str]:
+) -&gt; Union[list, str, None]:
 
     &#34;&#34;&#34;Search and gets images from e926.
 
@@ -487,20 +480,18 @@ def append_object(raw_object: dict):
     dict
         The json object returned by e926.
     &#34;&#34;&#34;
-    if gacha:
-        limit = 100
+
     if limit &gt; 1000:
         raise ValueError(Booru.error_handling_limit)
-    else:
-        self.query = query
 
+    self.query = query
     self.specs[&#34;tags&#34;] = self.query
     self.specs[&#34;limit&#34;] = limit
     self.specs[&#34;page&#34;] = page
 
     raw_data = await request(site=Booru.e926, params_x=self.specs, block=&#34;&#34;)
     self.appended = E926.append_object(raw_data[&#34;posts&#34;])
-    
+
     try:
         if gacha:
             return better_object(roll(self.appended))
@@ -514,7 +505,7 @@ def append_object(raw_object: dict):
 </details>
 </dd>
 <dt id="booru.client.e926.E926.search_image"><code class="name flex">
-<span>async def <span class="ident">search_image</span></span>(<span>self, query: str, limit: int = 100, page: int = 1) ‑> Union[aiohttp.client_reqrep.ClientResponse, str]</span>
+<span>async def <span class="ident">search_image</span></span>(<span>self, query: str, limit: int = 100, page: int = 1) ‑> Union[list, str, ForwardRef(None)]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Gets images, meant just image urls from e926.</p>
@@ -538,7 +529,7 @@ def append_object(raw_object: dict):
 </summary>
 <pre><code class="python">async def search_image(
     self, query: str, limit: int = 100, page: int = 1
-) -&gt; Union[aiohttp.ClientResponse, str]:
+) -&gt; Union[list, str, None]:
 
     &#34;&#34;&#34;Gets images, meant just image urls from e926.
 
@@ -562,7 +553,6 @@ def append_object(raw_object: dict):
 
     if limit &gt; 1000:
         raise ValueError(Booru.error_handling_limit)
-
 
     self.query = query
     self.specs[&#34;tags&#34;] = self.query

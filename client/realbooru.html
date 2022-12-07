@@ -27,7 +27,6 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import re
-import aiohttp
 from typing import Union
 from random import shuffle
 from ..utils.fetch import request, roll
@@ -45,7 +44,7 @@ class Realbooru(object):
         Search and gets images from realbooru.
 
     search_image : function
-        Gets images, image urls only from realbooru.
+        Search and gets images from realbooru, but only returns image.
 
     &#34;&#34;&#34;
 
@@ -72,7 +71,6 @@ class Realbooru(object):
                     &#34;post_url&#34;
                 ] = f&#34;{get_hostname(Booru.realbooru)}/index.php?page=post&amp;s=view&amp;id={raw_object[i][&#39;id&#39;]}&#34;
 
-        
             elif not raw_object[i][&#34;directory&#34;]:
                 raw_object[i][
                     &#34;file_url&#34;
@@ -80,7 +78,7 @@ class Realbooru(object):
                 raw_object[i][
                     &#34;post_url&#34;
                 ] = f&#34;{get_hostname(Booru.realbooru)}/index.php?page=post&amp;s=view&amp;id={raw_object[i][&#39;id&#39;]}&#34;
-                
+
                 raw_object[i][
                     &#34;directory&#34;
                 ] = f&#34;{raw_object[i][&#39;image&#39;][0:2]}/{raw_object[i][&#39;image&#39;][2:4]}&#34;
@@ -99,10 +97,10 @@ class Realbooru(object):
         Parameters
         ----------
         api_key : str
-            Your API Key which is accessible within your account options page
+            Your API Key (If possible)
 
         user_id : str
-            Your user ID, which is accessible on the account options/profile page.
+            Your user ID (If possible)
         &#34;&#34;&#34;
 
         if api_key and user_id == &#34;&#34;:
@@ -122,7 +120,7 @@ class Realbooru(object):
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search method
 
@@ -160,7 +158,7 @@ class Realbooru(object):
 
         raw_data = await request(site=Booru.realbooru, params_x=self.specs, block=block)
         self.appended = Realbooru.append_object(raw_data)
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -172,10 +170,9 @@ class Realbooru(object):
         except Exception as e:
             raise Exception(f&#34;Failed to get data: {e}&#34;)
 
-
     async def search_image(
         self, query: str, block: str = &#34;&#34;, limit: int = 100, page: int = 1
-    ) -&gt; Union[aiohttp.ClientResponse, str, None]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Parses image only
 
@@ -236,14 +233,14 @@ class Realbooru(object):
 <p>search : function
 Search and gets images from realbooru.</p>
 <p>search_image : function
-Gets images, image urls only from realbooru.</p>
+Search and gets images from realbooru, but only returns image.</p>
 <p>Initializes realbooru.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>api_key</code></strong> :&ensp;<code>str</code></dt>
-<dd>Your API Key which is accessible within your account options page</dd>
+<dd>Your API Key (If possible)</dd>
 <dt><strong><code>user_id</code></strong> :&ensp;<code>str</code></dt>
-<dd>Your user ID, which is accessible on the account options/profile page.</dd>
+<dd>Your user ID (If possible)</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -258,7 +255,7 @@ Gets images, image urls only from realbooru.</p>
         Search and gets images from realbooru.
 
     search_image : function
-        Gets images, image urls only from realbooru.
+        Search and gets images from realbooru, but only returns image.
 
     &#34;&#34;&#34;
 
@@ -285,7 +282,6 @@ Gets images, image urls only from realbooru.</p>
                     &#34;post_url&#34;
                 ] = f&#34;{get_hostname(Booru.realbooru)}/index.php?page=post&amp;s=view&amp;id={raw_object[i][&#39;id&#39;]}&#34;
 
-        
             elif not raw_object[i][&#34;directory&#34;]:
                 raw_object[i][
                     &#34;file_url&#34;
@@ -293,7 +289,7 @@ Gets images, image urls only from realbooru.</p>
                 raw_object[i][
                     &#34;post_url&#34;
                 ] = f&#34;{get_hostname(Booru.realbooru)}/index.php?page=post&amp;s=view&amp;id={raw_object[i][&#39;id&#39;]}&#34;
-                
+
                 raw_object[i][
                     &#34;directory&#34;
                 ] = f&#34;{raw_object[i][&#39;image&#39;][0:2]}/{raw_object[i][&#39;image&#39;][2:4]}&#34;
@@ -312,10 +308,10 @@ Gets images, image urls only from realbooru.</p>
         Parameters
         ----------
         api_key : str
-            Your API Key which is accessible within your account options page
+            Your API Key (If possible)
 
         user_id : str
-            Your user ID, which is accessible on the account options/profile page.
+            Your user ID (If possible)
         &#34;&#34;&#34;
 
         if api_key and user_id == &#34;&#34;:
@@ -335,7 +331,7 @@ Gets images, image urls only from realbooru.</p>
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search method
 
@@ -373,7 +369,7 @@ Gets images, image urls only from realbooru.</p>
 
         raw_data = await request(site=Booru.realbooru, params_x=self.specs, block=block)
         self.appended = Realbooru.append_object(raw_data)
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -385,10 +381,9 @@ Gets images, image urls only from realbooru.</p>
         except Exception as e:
             raise Exception(f&#34;Failed to get data: {e}&#34;)
 
-
     async def search_image(
         self, query: str, block: str = &#34;&#34;, limit: int = 100, page: int = 1
-    ) -&gt; Union[aiohttp.ClientResponse, str, None]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Parses image only
 
@@ -473,7 +468,6 @@ def append_object(raw_object: dict):
                 &#34;post_url&#34;
             ] = f&#34;{get_hostname(Booru.realbooru)}/index.php?page=post&amp;s=view&amp;id={raw_object[i][&#39;id&#39;]}&#34;
 
-    
         elif not raw_object[i][&#34;directory&#34;]:
             raw_object[i][
                 &#34;file_url&#34;
@@ -481,7 +475,7 @@ def append_object(raw_object: dict):
             raw_object[i][
                 &#34;post_url&#34;
             ] = f&#34;{get_hostname(Booru.realbooru)}/index.php?page=post&amp;s=view&amp;id={raw_object[i][&#39;id&#39;]}&#34;
-            
+
             raw_object[i][
                 &#34;directory&#34;
             ] = f&#34;{raw_object[i][&#39;image&#39;][0:2]}/{raw_object[i][&#39;image&#39;][2:4]}&#34;
@@ -499,7 +493,7 @@ def append_object(raw_object: dict):
 <h3>Methods</h3>
 <dl>
 <dt id="booru.client.realbooru.Realbooru.search"><code class="name flex">
-<span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[aiohttp.client_reqrep.ClientResponse, str]</span>
+<span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[list, str, ForwardRef(None)]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Search method</p>
@@ -535,7 +529,7 @@ def append_object(raw_object: dict):
     page: int = 1,
     random: bool = True,
     gacha: bool = False,
-) -&gt; Union[aiohttp.ClientResponse, str]:
+) -&gt; Union[list, str, None]:
 
     &#34;&#34;&#34;Search method
 
@@ -573,7 +567,7 @@ def append_object(raw_object: dict):
 
     raw_data = await request(site=Booru.realbooru, params_x=self.specs, block=block)
     self.appended = Realbooru.append_object(raw_data)
-    
+
     try:
         if gacha:
             return better_object(roll(self.appended))
@@ -587,7 +581,7 @@ def append_object(raw_object: dict):
 </details>
 </dd>
 <dt id="booru.client.realbooru.Realbooru.search_image"><code class="name flex">
-<span>async def <span class="ident">search_image</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1) ‑> Union[aiohttp.client_reqrep.ClientResponse, str, ForwardRef(None)]</span>
+<span>async def <span class="ident">search_image</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1) ‑> Union[list, str, ForwardRef(None)]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Parses image only</p>
@@ -613,7 +607,7 @@ def append_object(raw_object: dict):
 </summary>
 <pre><code class="python">async def search_image(
     self, query: str, block: str = &#34;&#34;, limit: int = 100, page: int = 1
-) -&gt; Union[aiohttp.ClientResponse, str, None]:
+) -&gt; Union[list, str, None]:
 
     &#34;&#34;&#34;Parses image only
 

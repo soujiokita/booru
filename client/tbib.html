@@ -27,7 +27,6 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import re
-import aiohttp
 from typing import Union
 from random import shuffle
 from ..utils.fetch import request, roll
@@ -42,10 +41,10 @@ class Tbib(object):
     Methods
     -------
     search : function
-        Search and gets images from tbib.
+        Search method for tbib.
 
     search_image : function
-        Gets images, image urls only from tbib.
+        Search method for tbib, but only returns image.
 
     &#34;&#34;&#34;
 
@@ -80,10 +79,10 @@ class Tbib(object):
         Parameters
         ----------
         api_key : str
-            Your API Key which is accessible within your account options page
+            Your API Key (If possible)
 
         user_id : str
-            Your user ID, which is accessible on the account options/profile page.
+            Your user ID (If possible)
         &#34;&#34;&#34;
 
         if api_key and user_id == &#34;&#34;:
@@ -103,7 +102,7 @@ class Tbib(object):
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search method
 
@@ -141,7 +140,7 @@ class Tbib(object):
 
         raw_data = await request(site=Booru.tbib, params_x=self.specs, block=block)
         self.appended = Tbib.append_object(raw_data)
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -153,10 +152,9 @@ class Tbib(object):
         except Exception as e:
             raise Exception(f&#34;Failed to get data: {e}&#34;)
 
-
     async def search_image(
         self, query: str, block: str = &#34;&#34;, limit: int = 100, page: int = 1
-    ) -&gt; Union[aiohttp.ClientResponse, str, None]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Parses image only
 
@@ -177,7 +175,6 @@ class Tbib(object):
             The json object (as string, you may need booru.resolve())
 
         &#34;&#34;&#34;
-
         if limit &gt; 1000:
             raise ValueError(Booru.error_handling_limit)
         if block and re.findall(block, query):
@@ -215,16 +212,16 @@ class Tbib(object):
 <div class="desc"><p>Tbib Client</p>
 <h2 id="methods">Methods</h2>
 <p>search : function
-Search and gets images from tbib.</p>
+Search method for tbib.</p>
 <p>search_image : function
-Gets images, image urls only from tbib.</p>
+Search method for tbib, but only returns image.</p>
 <p>Initializes tbib.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>api_key</code></strong> :&ensp;<code>str</code></dt>
-<dd>Your API Key which is accessible within your account options page</dd>
+<dd>Your API Key (If possible)</dd>
 <dt><strong><code>user_id</code></strong> :&ensp;<code>str</code></dt>
-<dd>Your user ID, which is accessible on the account options/profile page.</dd>
+<dd>Your user ID (If possible)</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -236,10 +233,10 @@ Gets images, image urls only from tbib.</p>
     Methods
     -------
     search : function
-        Search and gets images from tbib.
+        Search method for tbib.
 
     search_image : function
-        Gets images, image urls only from tbib.
+        Search method for tbib, but only returns image.
 
     &#34;&#34;&#34;
 
@@ -274,10 +271,10 @@ Gets images, image urls only from tbib.</p>
         Parameters
         ----------
         api_key : str
-            Your API Key which is accessible within your account options page
+            Your API Key (If possible)
 
         user_id : str
-            Your user ID, which is accessible on the account options/profile page.
+            Your user ID (If possible)
         &#34;&#34;&#34;
 
         if api_key and user_id == &#34;&#34;:
@@ -297,7 +294,7 @@ Gets images, image urls only from tbib.</p>
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -&gt; Union[aiohttp.ClientResponse, str]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Search method
 
@@ -335,7 +332,7 @@ Gets images, image urls only from tbib.</p>
 
         raw_data = await request(site=Booru.tbib, params_x=self.specs, block=block)
         self.appended = Tbib.append_object(raw_data)
-        
+
         try:
             if gacha:
                 return better_object(roll(self.appended))
@@ -347,10 +344,9 @@ Gets images, image urls only from tbib.</p>
         except Exception as e:
             raise Exception(f&#34;Failed to get data: {e}&#34;)
 
-
     async def search_image(
         self, query: str, block: str = &#34;&#34;, limit: int = 100, page: int = 1
-    ) -&gt; Union[aiohttp.ClientResponse, str, None]:
+    ) -&gt; Union[list, str, None]:
 
         &#34;&#34;&#34;Parses image only
 
@@ -371,7 +367,6 @@ Gets images, image urls only from tbib.</p>
             The json object (as string, you may need booru.resolve())
 
         &#34;&#34;&#34;
-
         if limit &gt; 1000:
             raise ValueError(Booru.error_handling_limit)
         if block and re.findall(block, query):
@@ -442,7 +437,7 @@ def append_object(raw_object: dict):
 <h3>Methods</h3>
 <dl>
 <dt id="booru.client.tbib.Tbib.search"><code class="name flex">
-<span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[aiohttp.client_reqrep.ClientResponse, str]</span>
+<span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[list, str, ForwardRef(None)]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Search method</p>
@@ -478,7 +473,7 @@ def append_object(raw_object: dict):
     page: int = 1,
     random: bool = True,
     gacha: bool = False,
-) -&gt; Union[aiohttp.ClientResponse, str]:
+) -&gt; Union[list, str, None]:
 
     &#34;&#34;&#34;Search method
 
@@ -516,7 +511,7 @@ def append_object(raw_object: dict):
 
     raw_data = await request(site=Booru.tbib, params_x=self.specs, block=block)
     self.appended = Tbib.append_object(raw_data)
-    
+
     try:
         if gacha:
             return better_object(roll(self.appended))
@@ -530,7 +525,7 @@ def append_object(raw_object: dict):
 </details>
 </dd>
 <dt id="booru.client.tbib.Tbib.search_image"><code class="name flex">
-<span>async def <span class="ident">search_image</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1) ‑> Union[aiohttp.client_reqrep.ClientResponse, str, ForwardRef(None)]</span>
+<span>async def <span class="ident">search_image</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1) ‑> Union[list, str, ForwardRef(None)]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Parses image only</p>
@@ -556,7 +551,7 @@ def append_object(raw_object: dict):
 </summary>
 <pre><code class="python">async def search_image(
     self, query: str, block: str = &#34;&#34;, limit: int = 100, page: int = 1
-) -&gt; Union[aiohttp.ClientResponse, str, None]:
+) -&gt; Union[list, str, None]:
 
     &#34;&#34;&#34;Parses image only
 
@@ -577,7 +572,6 @@ def append_object(raw_object: dict):
         The json object (as string, you may need booru.resolve())
 
     &#34;&#34;&#34;
-
     if limit &gt; 1000:
         raise ValueError(Booru.error_handling_limit)
     if block and re.findall(block, query):
