@@ -29,7 +29,8 @@
 <pre><code class="python">import re
 import aiohttp
 from typing import Union
-from ..utils.parser import Api, better_object, parse_image, get_hostname
+from ..utils.fetch import request, roll
+from ..utils.constant import Api, better_object, parse_image, get_hostname
 from random import shuffle, randint
 
 Booru = Api()
@@ -84,7 +85,7 @@ class Rule34(object):
         gacha: bool = False,
     ) -&gt; Union[aiohttp.ClientResponse, str]:
 
-        &#34;&#34;&#34;Search and gets images from rule34.
+        &#34;&#34;&#34;Search method
 
         Parameters
         ----------
@@ -97,7 +98,7 @@ class Rule34(object):
         page : int
             Expected number of page.
         random : bool
-            Shuffle the whole dict, default is True.
+            Shuffle the whole dict, default is False.
         gacha : bool
             Get random single object, limit property will be ignored.
 
@@ -118,41 +119,26 @@ class Rule34(object):
         self.specs[&#34;pid&#34;] = page
         self.specs[&#34;json&#34;] = &#34;1&#34;
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(Booru.rule34, params=self.specs) as resp:
-                self.data = await resp.json()
-                if not self.data:
-                    raise ValueError(Booru.error_handling_null)
+        raw_data = await request(site=Booru.rule34, params_x=self.specs, block=block)
+        self.appended = Rule34.append_object(raw_data)
+        
+        try:
+            if gacha:
+                return better_object(roll(self.appended))
+            elif random:
+                shuffle(self.appended)
+                return better_object(self.appended)
+            else:
+                return better_object(Rule34.append_object(self.appended))
+        except Exception as e:
+            raise Exception(f&#34;Failed to get data: {e}&#34;)
 
-                self.final = self.data
-                for i in range(len(self.final)):
-                    self.final[i][&#34;tags&#34;] = self.final[i][&#34;tags&#34;].split(&#34; &#34;)
-
-                self.final = [
-                    i for i in self.final if not any(j in block for j in i[&#34;tags&#34;])
-                ]
-
-                self.not_random = Rule34.append_object(self.final)
-                shuffle(self.not_random)
-
-                try:
-                    if gacha:
-                        return better_object(
-                            self.not_random[randint(0, len(self.not_random))]
-                        )
-                    elif random:
-                        return better_object(self.not_random)
-                    else:
-                        return better_object(Rule34.append_object(self.final))
-
-                except Exception as e:
-                    raise Exception(f&#34;Failed to get data: {e}&#34;)
 
     async def search_image(
         self, query: str, block: str = &#34;&#34;, limit: int = 100, page: int = 1
     ) -&gt; Union[aiohttp.ClientResponse, str, None]:
 
-        &#34;&#34;&#34;Gets images, meant just image urls from rule34.
+        &#34;&#34;&#34;Parses image only
 
         Parameters
         ----------
@@ -183,25 +169,11 @@ class Rule34(object):
         self.specs[&#34;pid&#34;] = page
         self.specs[&#34;json&#34;] = &#34;1&#34;
 
+        raw_data = await request(site=Booru.rule34, params_x=self.specs, block=block)
+        self.appended = Rule34.append_object(raw_data)
+
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(Booru.rule34, params=self.specs) as resp:
-                    self.data = await resp.json()
-                    if not self.data:
-                        raise ValueError(Booru.error_handling_null)
-                    self.final = self.data
-
-                    for i in range(len(self.final)):
-                        self.final[i][&#34;tags&#34;] = self.final[i][&#34;tags&#34;].split(&#34; &#34;)
-
-                    self.final = [
-                        i for i in self.final if not any(j in block for j in i[&#34;tags&#34;])
-                    ]
-
-                    self.not_random = parse_image(Rule34.append_object(self.final))
-                    shuffle(self.not_random)
-                    return better_object(self.not_random)
-
+            return better_object(parse_image(self.appended))
         except Exception as e:
             raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
 </details>
@@ -278,7 +250,7 @@ Parses the image url only.</p></div>
         gacha: bool = False,
     ) -&gt; Union[aiohttp.ClientResponse, str]:
 
-        &#34;&#34;&#34;Search and gets images from rule34.
+        &#34;&#34;&#34;Search method
 
         Parameters
         ----------
@@ -291,7 +263,7 @@ Parses the image url only.</p></div>
         page : int
             Expected number of page.
         random : bool
-            Shuffle the whole dict, default is True.
+            Shuffle the whole dict, default is False.
         gacha : bool
             Get random single object, limit property will be ignored.
 
@@ -312,41 +284,26 @@ Parses the image url only.</p></div>
         self.specs[&#34;pid&#34;] = page
         self.specs[&#34;json&#34;] = &#34;1&#34;
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(Booru.rule34, params=self.specs) as resp:
-                self.data = await resp.json()
-                if not self.data:
-                    raise ValueError(Booru.error_handling_null)
+        raw_data = await request(site=Booru.rule34, params_x=self.specs, block=block)
+        self.appended = Rule34.append_object(raw_data)
+        
+        try:
+            if gacha:
+                return better_object(roll(self.appended))
+            elif random:
+                shuffle(self.appended)
+                return better_object(self.appended)
+            else:
+                return better_object(Rule34.append_object(self.appended))
+        except Exception as e:
+            raise Exception(f&#34;Failed to get data: {e}&#34;)
 
-                self.final = self.data
-                for i in range(len(self.final)):
-                    self.final[i][&#34;tags&#34;] = self.final[i][&#34;tags&#34;].split(&#34; &#34;)
-
-                self.final = [
-                    i for i in self.final if not any(j in block for j in i[&#34;tags&#34;])
-                ]
-
-                self.not_random = Rule34.append_object(self.final)
-                shuffle(self.not_random)
-
-                try:
-                    if gacha:
-                        return better_object(
-                            self.not_random[randint(0, len(self.not_random))]
-                        )
-                    elif random:
-                        return better_object(self.not_random)
-                    else:
-                        return better_object(Rule34.append_object(self.final))
-
-                except Exception as e:
-                    raise Exception(f&#34;Failed to get data: {e}&#34;)
 
     async def search_image(
         self, query: str, block: str = &#34;&#34;, limit: int = 100, page: int = 1
     ) -&gt; Union[aiohttp.ClientResponse, str, None]:
 
-        &#34;&#34;&#34;Gets images, meant just image urls from rule34.
+        &#34;&#34;&#34;Parses image only
 
         Parameters
         ----------
@@ -377,25 +334,11 @@ Parses the image url only.</p></div>
         self.specs[&#34;pid&#34;] = page
         self.specs[&#34;json&#34;] = &#34;1&#34;
 
+        raw_data = await request(site=Booru.rule34, params_x=self.specs, block=block)
+        self.appended = Rule34.append_object(raw_data)
+
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(Booru.rule34, params=self.specs) as resp:
-                    self.data = await resp.json()
-                    if not self.data:
-                        raise ValueError(Booru.error_handling_null)
-                    self.final = self.data
-
-                    for i in range(len(self.final)):
-                        self.final[i][&#34;tags&#34;] = self.final[i][&#34;tags&#34;].split(&#34; &#34;)
-
-                    self.final = [
-                        i for i in self.final if not any(j in block for j in i[&#34;tags&#34;])
-                    ]
-
-                    self.not_random = parse_image(Rule34.append_object(self.final))
-                    shuffle(self.not_random)
-                    return better_object(self.not_random)
-
+            return better_object(parse_image(self.appended))
         except Exception as e:
             raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
 </details>
@@ -451,7 +394,7 @@ def append_object(raw_object: dict):
 <span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[aiohttp.client_reqrep.ClientResponse, str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Search and gets images from rule34.</p>
+<div class="desc"><p>Search method</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>query</code></strong> :&ensp;<code>str</code></dt>
@@ -463,7 +406,7 @@ def append_object(raw_object: dict):
 <dt><strong><code>page</code></strong> :&ensp;<code>int</code></dt>
 <dd>Expected number of page.</dd>
 <dt><strong><code>random</code></strong> :&ensp;<code>bool</code></dt>
-<dd>Shuffle the whole dict, default is True.</dd>
+<dd>Shuffle the whole dict, default is False.</dd>
 <dt><strong><code>gacha</code></strong> :&ensp;<code>bool</code></dt>
 <dd>Get random single object, limit property will be ignored.</dd>
 </dl>
@@ -486,7 +429,7 @@ def append_object(raw_object: dict):
     gacha: bool = False,
 ) -&gt; Union[aiohttp.ClientResponse, str]:
 
-    &#34;&#34;&#34;Search and gets images from rule34.
+    &#34;&#34;&#34;Search method
 
     Parameters
     ----------
@@ -499,7 +442,7 @@ def append_object(raw_object: dict):
     page : int
         Expected number of page.
     random : bool
-        Shuffle the whole dict, default is True.
+        Shuffle the whole dict, default is False.
     gacha : bool
         Get random single object, limit property will be ignored.
 
@@ -520,42 +463,26 @@ def append_object(raw_object: dict):
     self.specs[&#34;pid&#34;] = page
     self.specs[&#34;json&#34;] = &#34;1&#34;
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(Booru.rule34, params=self.specs) as resp:
-            self.data = await resp.json()
-            if not self.data:
-                raise ValueError(Booru.error_handling_null)
-
-            self.final = self.data
-            for i in range(len(self.final)):
-                self.final[i][&#34;tags&#34;] = self.final[i][&#34;tags&#34;].split(&#34; &#34;)
-
-            self.final = [
-                i for i in self.final if not any(j in block for j in i[&#34;tags&#34;])
-            ]
-
-            self.not_random = Rule34.append_object(self.final)
-            shuffle(self.not_random)
-
-            try:
-                if gacha:
-                    return better_object(
-                        self.not_random[randint(0, len(self.not_random))]
-                    )
-                elif random:
-                    return better_object(self.not_random)
-                else:
-                    return better_object(Rule34.append_object(self.final))
-
-            except Exception as e:
-                raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
+    raw_data = await request(site=Booru.rule34, params_x=self.specs, block=block)
+    self.appended = Rule34.append_object(raw_data)
+    
+    try:
+        if gacha:
+            return better_object(roll(self.appended))
+        elif random:
+            shuffle(self.appended)
+            return better_object(self.appended)
+        else:
+            return better_object(Rule34.append_object(self.appended))
+    except Exception as e:
+        raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="booru.client.rule34.Rule34.search_image"><code class="name flex">
 <span>async def <span class="ident">search_image</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1) ‑> Union[aiohttp.client_reqrep.ClientResponse, str, ForwardRef(None)]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Gets images, meant just image urls from rule34.</p>
+<div class="desc"><p>Parses image only</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>query</code></strong> :&ensp;<code>str</code></dt>
@@ -580,7 +507,7 @@ def append_object(raw_object: dict):
     self, query: str, block: str = &#34;&#34;, limit: int = 100, page: int = 1
 ) -&gt; Union[aiohttp.ClientResponse, str, None]:
 
-    &#34;&#34;&#34;Gets images, meant just image urls from rule34.
+    &#34;&#34;&#34;Parses image only
 
     Parameters
     ----------
@@ -611,25 +538,11 @@ def append_object(raw_object: dict):
     self.specs[&#34;pid&#34;] = page
     self.specs[&#34;json&#34;] = &#34;1&#34;
 
+    raw_data = await request(site=Booru.rule34, params_x=self.specs, block=block)
+    self.appended = Rule34.append_object(raw_data)
+
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(Booru.rule34, params=self.specs) as resp:
-                self.data = await resp.json()
-                if not self.data:
-                    raise ValueError(Booru.error_handling_null)
-                self.final = self.data
-
-                for i in range(len(self.final)):
-                    self.final[i][&#34;tags&#34;] = self.final[i][&#34;tags&#34;].split(&#34; &#34;)
-
-                self.final = [
-                    i for i in self.final if not any(j in block for j in i[&#34;tags&#34;])
-                ]
-
-                self.not_random = parse_image(Rule34.append_object(self.final))
-                shuffle(self.not_random)
-                return better_object(self.not_random)
-
+        return better_object(parse_image(self.appended))
     except Exception as e:
         raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
 </details>

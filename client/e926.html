@@ -28,7 +28,8 @@
 </summary>
 <pre><code class="python">import aiohttp
 from typing import Union
-from ..utils.parser import Api, better_object, parse_image, get_hostname
+from ..utils.fetch import request, roll
+from ..utils.constant import Api, better_object, parse_image, get_hostname
 from random import shuffle, randint
 
 Booru = Api()
@@ -134,27 +135,19 @@ class E926(object):
         self.specs[&#34;limit&#34;] = limit
         self.specs[&#34;page&#34;] = page
 
-        async with aiohttp.ClientSession(headers=Booru.headers) as session:
-            async with session.get(Booru.e926, params=self.specs) as resp:
-                self.data = await resp.json(content_type=None)
-                self.final = self.data
-
-                if not self.final[&#34;posts&#34;]:
-                    raise ValueError(Booru.error_handling_null)
-
-                self.not_random = E926.append_object(self.final[&#34;posts&#34;])
-                shuffle(self.not_random)
-
-                try:
-                    if gacha:
-                        return better_object(self.not_random[randint(0, len(self.not_random))])
-                    elif random:
-                        return better_object(self.not_random)
-                    else:
-                        return better_object(E926.append_object(self.final[&#34;posts&#34;]))
-
-                except Exception as e:
-                    raise ValueError(f&#34;Failed to get data: {e}&#34;)
+        raw_data = await request(site=Booru.e926, params_x=self.specs, block=&#34;&#34;)
+        self.appended = E926.append_object(raw_data[&#34;posts&#34;])
+        
+        try:
+            if gacha:
+                return better_object(roll(self.appended))
+            elif random:
+                shuffle(self.appended)
+                return better_object(self.appended)
+            else:
+                return better_object(E926.append_object(self.appended))
+        except Exception as e:
+            raise Exception(f&#34;Failed to get data: {e}&#34;)
 
     async def search_image(
         self, query: str, limit: int = 100, page: int = 1
@@ -190,18 +183,13 @@ class E926(object):
         self.specs[&#34;pid&#34;] = page
         self.specs[&#34;json&#34;] = &#34;1&#34;
 
+        raw_data = await request(site=Booru.e926, params_x=self.specs, block=&#34;&#34;)
+        self.appended = E926.append_object(raw_data[&#34;posts&#34;])
+
         try:
-            async with aiohttp.ClientSession(headers=Booru.headers) as session:
-                async with session.get(Booru.e926, params=self.specs) as resp:
-                    self.data = await resp.json(content_type=None)
-                    self.final = self.data
-
-                    self.not_random = parse_image(self.final[&#34;posts&#34;])
-                    shuffle(self.not_random)
-                    return better_object(self.not_random)
-
+            return better_object(parse_image(self.appended))
         except Exception as e:
-            raise ValueError(f&#34;Failed to get data: {e}&#34;)</code></pre>
+            raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -336,27 +324,19 @@ Gets images, meant just image urls from e926.</p>
         self.specs[&#34;limit&#34;] = limit
         self.specs[&#34;page&#34;] = page
 
-        async with aiohttp.ClientSession(headers=Booru.headers) as session:
-            async with session.get(Booru.e926, params=self.specs) as resp:
-                self.data = await resp.json(content_type=None)
-                self.final = self.data
-
-                if not self.final[&#34;posts&#34;]:
-                    raise ValueError(Booru.error_handling_null)
-
-                self.not_random = E926.append_object(self.final[&#34;posts&#34;])
-                shuffle(self.not_random)
-
-                try:
-                    if gacha:
-                        return better_object(self.not_random[randint(0, len(self.not_random))])
-                    elif random:
-                        return better_object(self.not_random)
-                    else:
-                        return better_object(E926.append_object(self.final[&#34;posts&#34;]))
-
-                except Exception as e:
-                    raise ValueError(f&#34;Failed to get data: {e}&#34;)
+        raw_data = await request(site=Booru.e926, params_x=self.specs, block=&#34;&#34;)
+        self.appended = E926.append_object(raw_data[&#34;posts&#34;])
+        
+        try:
+            if gacha:
+                return better_object(roll(self.appended))
+            elif random:
+                shuffle(self.appended)
+                return better_object(self.appended)
+            else:
+                return better_object(E926.append_object(self.appended))
+        except Exception as e:
+            raise Exception(f&#34;Failed to get data: {e}&#34;)
 
     async def search_image(
         self, query: str, limit: int = 100, page: int = 1
@@ -392,18 +372,13 @@ Gets images, meant just image urls from e926.</p>
         self.specs[&#34;pid&#34;] = page
         self.specs[&#34;json&#34;] = &#34;1&#34;
 
+        raw_data = await request(site=Booru.e926, params_x=self.specs, block=&#34;&#34;)
+        self.appended = E926.append_object(raw_data[&#34;posts&#34;])
+
         try:
-            async with aiohttp.ClientSession(headers=Booru.headers) as session:
-                async with session.get(Booru.e926, params=self.specs) as resp:
-                    self.data = await resp.json(content_type=None)
-                    self.final = self.data
-
-                    self.not_random = parse_image(self.final[&#34;posts&#34;])
-                    shuffle(self.not_random)
-                    return better_object(self.not_random)
-
+            return better_object(parse_image(self.appended))
         except Exception as e:
-            raise ValueError(f&#34;Failed to get data: {e}&#34;)</code></pre>
+            raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -523,27 +498,19 @@ def append_object(raw_object: dict):
     self.specs[&#34;limit&#34;] = limit
     self.specs[&#34;page&#34;] = page
 
-    async with aiohttp.ClientSession(headers=Booru.headers) as session:
-        async with session.get(Booru.e926, params=self.specs) as resp:
-            self.data = await resp.json(content_type=None)
-            self.final = self.data
-
-            if not self.final[&#34;posts&#34;]:
-                raise ValueError(Booru.error_handling_null)
-
-            self.not_random = E926.append_object(self.final[&#34;posts&#34;])
-            shuffle(self.not_random)
-
-            try:
-                if gacha:
-                    return better_object(self.not_random[randint(0, len(self.not_random))])
-                elif random:
-                    return better_object(self.not_random)
-                else:
-                    return better_object(E926.append_object(self.final[&#34;posts&#34;]))
-
-            except Exception as e:
-                raise ValueError(f&#34;Failed to get data: {e}&#34;)</code></pre>
+    raw_data = await request(site=Booru.e926, params_x=self.specs, block=&#34;&#34;)
+    self.appended = E926.append_object(raw_data[&#34;posts&#34;])
+    
+    try:
+        if gacha:
+            return better_object(roll(self.appended))
+        elif random:
+            shuffle(self.appended)
+            return better_object(self.appended)
+        else:
+            return better_object(E926.append_object(self.appended))
+    except Exception as e:
+        raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="booru.client.e926.E926.search_image"><code class="name flex">
@@ -603,18 +570,13 @@ def append_object(raw_object: dict):
     self.specs[&#34;pid&#34;] = page
     self.specs[&#34;json&#34;] = &#34;1&#34;
 
+    raw_data = await request(site=Booru.e926, params_x=self.specs, block=&#34;&#34;)
+    self.appended = E926.append_object(raw_data[&#34;posts&#34;])
+
     try:
-        async with aiohttp.ClientSession(headers=Booru.headers) as session:
-            async with session.get(Booru.e926, params=self.specs) as resp:
-                self.data = await resp.json(content_type=None)
-                self.final = self.data
-
-                self.not_random = parse_image(self.final[&#34;posts&#34;])
-                shuffle(self.not_random)
-                return better_object(self.not_random)
-
+        return better_object(parse_image(self.appended))
     except Exception as e:
-        raise ValueError(f&#34;Failed to get data: {e}&#34;)</code></pre>
+        raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
 </details>
 </dd>
 </dl>
