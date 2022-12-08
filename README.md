@@ -118,7 +118,7 @@ from booru import Rule34
 
 async def main():
     r34 = Rule34()
-    img = await r34.search(query="cat_girl", block="futanari")
+    img = await r34.search_image(query="cat_girl", block="futanari")
     print(img)
 
 asyncio.run(main())
@@ -126,6 +126,18 @@ asyncio.run(main())
 - This will parses image url only, instead object
 
 ### **find_tags()**
+You want to tags completion like browser?  
+<center>
+<table>
+  <tr>
+    <td align="center"><img src="https://cdn.discordapp.com/attachments/1046495201176334467/1050354442966413352/rounded_corners_3.png" width="320px;" alt=""/><br />What browser looks like</td>
+    <td align="center"><img src="https://cdn.discordapp.com/attachments/1046495201176334467/1050354442651836506/rounded_corners_4.png" width="320px;" alt=""/><br />This library also</td>
+
+
+  </tr>
+</table>
+</center><br>
+
 ```py
 import asyncio
 from booru import Danbooru
