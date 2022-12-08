@@ -1,7 +1,7 @@
 # Booru
 Python bindings for Booru imageboards
 
-<a href="http://sinkaroid.github.io/booru"><img align="right" src="https://cdn.discordapp.com/attachments/952117487166705747/961124440400351232/mataa.png" width="380"></a>
+<a href="http://sinkaroid.github.io/booru"><img align="right" src="https://cdn.discordapp.com/attachments/952117487166705747/961124440400351232/mataa.png" width="390"></a>
 
 - [Booru](#booru)
   - [Features](#features)
@@ -16,8 +16,8 @@ Python bindings for Booru imageboards
   - [booru.resolve()](#booruresolve)
   - [Import specific booru client](#search)
   - [Testing cases](https://github.com/sinkaroid/booru/actions)
-      - [Core](https://github.com/sinkaroid/booru/actions)
-      - [Tags completion](https://github.com/soujiokita/booru/actions/workflows/find_tags.yml)
+      - [The core](https://github.com/sinkaroid/booru/actions)
+      - [Tags completion](https://github.com/sinkaroid/booru/actions/workflows/find_tags.yml)
   - [Documentation](#documentation)
   - [Legal](#legal)  
 
@@ -26,7 +26,7 @@ Python bindings for Booru imageboards
 <div align="center">
 
 <a href="https://sinkaroid.github.io/booru"><img src="https://github.com/sinkaroid/booru/actions/workflows/docs.yml/badge.svg"></a>
-<a href="https://github.com/sinkaroid/booru/actions/workflows/api.yml"><img src="https://github.com/sinkaroid/booru/actions/workflows/api.yml/badge.svg"></a>
+<a href="https://github.com/sinkaroid/booru/actions/workflows/find_tags.yml"><img src="https://github.com/soujiokita/booru/workflows/Tags completion/badge.svg"></a>
 <a href="https://codeclimate.com/github/sinkaroid/booru/maintainability"><img src="https://api.codeclimate.com/v1/badges/c334d91994d1d84b8d7d/maintainability" /></a>
 
 Python bindings for the imageboards.
@@ -41,7 +41,6 @@ It is takes a much more functionalities to interacts with ease, and featureful. 
 
 ----
 
-
 ## Features
 - Plenty of imageboards
 - Search random & gacha object
@@ -52,7 +51,7 @@ It is takes a much more functionalities to interacts with ease, and featureful. 
 - Easy to use, check your intelisense
 
 ## Usage
-Async context, and it's recommended use [asyncio](https://docs.python.org/3/library/asyncio.html)
+Async context, and it's recommended use [asyncio](https://docs.python.org/3/library/asyncio.html), The documentation: https://sinkaroid.github.io/booru
 
 ### Prerequisites
 <table>
@@ -60,8 +59,7 @@ Async context, and it's recommended use [asyncio](https://docs.python.org/3/libr
 </table>
 
 ### Installation
-`pip install booru`  
-The documentation: https://sinkaroid.github.io/booru
+`pip install booru`
 
 
 ## This library vs. the Competition
