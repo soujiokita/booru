@@ -126,13 +126,12 @@ asyncio.run(main())
 - This will parses image url only, instead object
 
 ### **find_tags()**
-You want to tags completion like browser?  
+You want to query completion like the browser do?  
 <center>
 <table>
   <tr>
-    <td align="center"><img src="https://cdn.discordapp.com/attachments/1046495201176334467/1050354442966413352/rounded_corners_3.png" width="320px;" alt=""/><br />What browser looks like</td>
-    <td align="center"><img src="https://cdn.discordapp.com/attachments/1046495201176334467/1050354442651836506/rounded_corners_4.png" width="320px;" alt=""/><br />This library also</td>
-
+    <td align="center"><img src="https://cdn.discordapp.com/attachments/1046495201176334467/1050354442966413352/rounded_corners_3.png" width="360px;" alt=""/><br />What browser looks like</td>
+    <td align="center"><img src="https://cdn.discordapp.com/attachments/1046495201176334467/1050354442651836506/rounded_corners_4.png" width="360px;" alt=""/><br />This library also</td>
 
   </tr>
 </table>
