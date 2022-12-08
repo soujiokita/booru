@@ -1,7 +1,7 @@
 # Booru
 Python bindings for Booru imageboards
 
-<a href="http://sinkaroid.github.io/booru"><img align="right" src="https://cdn.discordapp.com/attachments/952117487166705747/961124440400351232/mataa.png" width="390"></a>
+<a href="http://sinkaroid.github.io/booru"><img align="right" src="https://cdn.discordapp.com/attachments/952117487166705747/961124440400351232/mataa.png" width="400"></a>
 
 - [Booru](#booru)
   - [Features](#features)
@@ -149,7 +149,7 @@ async def main():
 
 asyncio.run(main())
 ```
-- Get the `wildcard[0]` for the best predicts.
+- Get the `wildcard[0]` for the best match.
 
 ## booru.resolve()
 You will need this for every object, this library designed to be neat and clean returns, although it must be reparsed to the string first, that's why `booru.resolve()` exist.
