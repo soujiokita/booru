@@ -37,8 +37,9 @@ It is takes a much more functionalities to interacts with ease, and fully extend
 <a href="https://github.com/sinkaroid/booru/issues/new/choose">Report Issues</a>
 </b>
 </div>
+<br>
 
----
+
 
 ## Features
 - Handle 19 different booru
