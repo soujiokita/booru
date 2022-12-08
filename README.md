@@ -139,16 +139,17 @@ You want to wildcard or query completion like the browser do?
 
 ```py
 import asyncio
-from booru import Danbooru
+from booru import Danbooru, resolve
 
 async def main():
     dan = Danbooru()
     find_tags = await dan.find_tags("jeanne") ## arbitrary tags
-    print(find_tags)
+    wildcard = resolve(find_tags)
+    print(wildcard)
 
 asyncio.run(main())
 ```
-- Get the `get_proper_tags[0]` for the best predicts.
+- Get the `wildcard[0]` for the best predicts.
 
 ## booru.resolve()
 You will need this for every object, this library designed to be neat and clean returns, although it must be reparsed to the string first, that's why `booru.resolve()` exist.
