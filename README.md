@@ -19,6 +19,8 @@ Python bindings for Booru imageboards
       - [Import you want to use](#import-you-want-to-use)
   - [Documentation](#documentation)
 
+
+
 <div align="center">
 
 <a href="https://sinkaroid.github.io/booru"><img src="https://github.com/sinkaroid/booru/actions/workflows/docs.yml/badge.svg"></a>
