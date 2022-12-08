@@ -20,7 +20,7 @@ Python bindings for Booru imageboards
   - [Documentation](#documentation)
   - [Legal](#legal)  
 
-
+----
 
 <div align="center">
 
