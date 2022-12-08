@@ -1,7 +1,7 @@
 # Booru
 Python bindings for Booru imageboards
 
-<a href="http://sinkaroid.github.io/booru"><img align="right" src="https://cdn.discordapp.com/attachments/952117487166705747/961124440400351232/mataa.png" width="400"></a>
+<a href="http://sinkaroid.github.io/booru"><img align="right" src="https://cdn.discordapp.com/attachments/952117487166705747/961124440400351232/mataa.png" width="380"></a>
 
 - [Booru](#booru)
   - [Features](#features)
@@ -13,10 +13,7 @@ Python bindings for Booru imageboards
     - [Quick example](#quick-example)
       - [search](#search)
       - [get image](#get-image)
-    - [Advanced example](#advanced-example)
-      - [Armored search](#armored-search)
-      - [Gacha-like](#gacha-like)
-      - [Import you want to use](#import-you-want-to-use)
+      - [get image](#get-image)
   - [Documentation](#documentation)
   - [Legal](#legal)  
 
@@ -43,12 +40,12 @@ It is takes a much more functionalities to interacts with ease, and featureful. 
 
 ## Features
 - Plenty of imageboards
-- Search random & gacha dictionaries
+- Search random & gacha object
 - Tags block, resolved safety tags concerns
 - Tags finder, tags & query completion
 - Parses and returns the image only
-- Easy to use, check your intelisense
 - Documented and tested
+- Easy to use, check your intelisense
 
 ## Usage
 Async context, and it's recommended use [asyncio](https://docs.python.org/3/library/asyncio.html)
@@ -59,51 +56,8 @@ Async context, and it's recommended use [asyncio](https://docs.python.org/3/libr
 </table>
 
 ### Installation
-`pip install booru`
-
-
-## Example
-### search()
-
-```py
-import asyncio
-import booru
-
-async def main():
-    dan = booru.Danbooru()
-    res = await dan.search(query="cat_girl", block="futanari")
-    print(res) ## this is <class 'str'>
-    print(booru.resolve(res)) ## this is <class 'list'>
-
-asyncio.run(main())
-```  
-### search_image()
-
-```py
-res = await dan.search_image(query="cat_girl", limit=50)
-print(res)
-```  
-You will never gets content which contains futa tags.
-
-### find_tags()
-A tags completion, no more sus query. See this example
-```py
-get_proper_tags = await dan.find_tags(query="jeanne")
-print(get_proper_tags)
-```
-Returns
-```js
-[   
-    "jeanne_d'arc_alter_(fate)",
-    "jeanne_d'arc_(fate)",
-    "jeanne_d'arc_(fate)+ai:jeanne_d'arc_(fate)%2C0%25",
-    "jeanne_d'arc_alter_(avenger)_(fate)",
-    "jeanne_d'arc_(ruler)_(fate)"
-]
-```
-Use this for validating tags in related imageboards.  
-Get the `get_proper_tags[0]` for the best predicts.
-
+`pip install booru`  
+The documentation: https://sinkaroid.github.io/booru
 
 
 ## This library vs. the Competition
@@ -132,8 +86,56 @@ Get the `get_proper_tags[0]` for the best predicts.
 | [Behoimi](http://behoimi.org/)              | [![status](https://github.com/soujiokita/booru/workflows/Behoimi/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/behoi.yml)   | `Yes`      | `No`      | `No` | `Yes` | `Yes` | 
 | [Paheal](https://rule34.paheal.net/)        | [![status](https://github.com/soujiokita/booru/workflows/Paheal/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/paheal.yml)     | `Yes`      | `No`      | `No` | `Yes` | `Yes` | 
 
-## Documentation
-The documentation can be found https://sinkaroid.github.io/booru
+## Example
+### **search()**
+Takes parameter `(query: str, block: str = "", limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False)`
+```py
+import asyncio
+import booru
+
+async def main():
+    dan = booru.Danbooru()
+    res = await dan.search(query="cat_girl", block="futanari")
+    print(res) ## this is <class 'str'>
+    print(booru.resolve(res)) ## this is <class 'list'>
+
+asyncio.run(main())
+```  
+- You will never gets content which contains futa tags.
+
+You can also import specific booru client.
+```py
+from booru import Rule34
+some_booru = Rule34()
+
+## do with r34
+```
+
+### **search_image()**
+Takes parameter `search_image(query: str, block: str = "", limit: int = 100, page: int = 1)`
+```py
+res = await dan.search_image(query="cat_girl", limit=50)
+print(res)
+```  
+- This will parses image url only, instead object
+
+### **find_tags()**
+```py
+get_proper_tags = await dan.find_tags(query="jeanne")
+print(get_proper_tags)
+```
+Returns
+```js
+[   
+    "jeanne_d'arc_alter_(fate)",
+    "jeanne_d'arc_(fate)",
+    "jeanne_d'arc_(fate)+ai:jeanne_d'arc_(fate)%2C0%25",
+    "jeanne_d'arc_alter_(avenger)_(fate)",
+    "jeanne_d'arc_(ruler)_(fate)"
+]
+```
+- No more sussy tags, use this for validating query in related imageboards. 
+- Get the `get_proper_tags[0]` for the best predicts.
 
 
 ## Legal
