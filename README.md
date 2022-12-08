@@ -18,6 +18,7 @@ Python bindings for Booru imageboards
       - [Gacha-like](#gacha-like)
       - [Import you want to use](#import-you-want-to-use)
   - [Documentation](#documentation)
+  - [Legal](#legal)  
 
 
 
