@@ -1,8 +1,10 @@
 import re
-import aiohttp
 from typing import Union
-from random import shuffle, randint
-from ..utils.parser import Api, better_object, parse_image, get_hostname
+from random import shuffle
+from ..utils.fetch import request, request_wildcard, roll
+from ..utils.constant import Api, better_object, parse_image, get_hostname
+from bs4 import BeautifulSoup
+import aiohttp
 
 Booru = Api()
 
@@ -13,10 +15,13 @@ class Tbib(object):
     Methods
     -------
     search : function
-        Search and gets images from tbib.
+        Search method for tbib.
 
     search_image : function
-        Gets images, image urls only from tbib.
+        Search method for tbib, but only returns image.
+
+    find_tags : function
+        Get the proper tags from tbib.
 
     """
 
@@ -51,10 +56,10 @@ class Tbib(object):
         Parameters
         ----------
         api_key : str
-            Your API Key which is accessible within your account options page
+            Your API Key (If possible)
 
         user_id : str
-            Your user ID, which is accessible on the account options/profile page.
+            Your user ID (If possible)
         """
 
         if api_key and user_id == "":
@@ -74,7 +79,7 @@ class Tbib(object):
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -> Union[aiohttp.ClientResponse, str]:
+    ) -> Union[list, str, None]:
 
         """Search method
 
@@ -89,7 +94,7 @@ class Tbib(object):
         page : int
             Expected number of page.
         random : bool
-            Shuffle the whole dict, default is True.
+            Shuffle the whole dict, default is False.
         gacha : bool
             Get random single object, limit property will be ignored.
 
@@ -110,39 +115,23 @@ class Tbib(object):
         self.specs["pid"] = page
         self.specs["json"] = "1"
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(Booru.tbib, params=self.specs) as resp:
-                self.data = await resp.json(content_type=None)
-                if not self.data:
-                    raise ValueError(Booru.error_handling_null)
+        raw_data = await request(site=Booru.tbib, params_x=self.specs, block=block)
+        self.appended = Tbib.append_object(raw_data)
 
-                self.final = self.data
-                for i in range(len(self.final)):
-                    self.final[i]["tags"] = self.final[i]["tags"].split(" ")
-
-                self.final = [
-                    i for i in self.final if not any(j in block for j in i["tags"])
-                ]
-
-                self.not_random = Tbib.append_object(self.final)
-                shuffle(self.not_random)
-
-                try:
-                    if gacha:
-                        return better_object(
-                            self.not_random[randint(0, len(self.not_random))]
-                        )
-                    elif random:
-                        return better_object(self.not_random)
-                    else:
-                        return better_object(Tbib.append_object(self.final))
-
-                except Exception as e:
-                    raise Exception(f"Failed to get data: {e}")
+        try:
+            if gacha:
+                return better_object(roll(self.appended))
+            elif random:
+                shuffle(self.appended)
+                return better_object(self.appended)
+            else:
+                return better_object(Tbib.append_object(self.appended))
+        except Exception as e:
+            raise Exception(f"Failed to get data: {e}")
 
     async def search_image(
         self, query: str, block: str = "", limit: int = 100, page: int = 1
-    ) -> Union[aiohttp.ClientResponse, str, None]:
+    ) -> Union[list, str, None]:
 
         """Parses image only
 
@@ -163,7 +152,6 @@ class Tbib(object):
             The json object (as string, you may need booru.resolve())
 
         """
-
         if limit > 1000:
             raise ValueError(Booru.error_handling_limit)
         if block and re.findall(block, query):
@@ -175,24 +163,34 @@ class Tbib(object):
         self.specs["pid"] = page
         self.specs["json"] = "1"
 
+        raw_data = await request(site=Booru.tbib, params_x=self.specs, block=block)
+        self.appended = Tbib.append_object(raw_data)
+
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(Booru.tbib, params=self.specs) as resp:
-                    self.data = await resp.json(content_type=None)
-                    if not self.data:
-                        raise ValueError(Booru.error_handling_null)
-                    self.final = self.data
+            return better_object(parse_image(self.appended))
+        except Exception as e:
+            raise Exception(f"Failed to get data: {e}")
 
-                    for i in range(len(self.final)):
-                        self.final[i]["tags"] = self.final[i]["tags"].split(" ")
+    async def find_tags(site: str, query: str) -> Union[list, str, None]:
+        """Find tags
 
-                    self.final = [
-                        i for i in self.final if not any(j in block for j in i["tags"])
-                    ]
+        Parameters
+        ----------
+        site : str
+            The site to search for.
+        query : str
+            The tag to search for.
 
-                    self.not_random = parse_image(Tbib.append_object(self.final))
-                    shuffle(self.not_random)
-                    return better_object(self.not_random)
+        Returns
+        -------
+        list
+            The list of tags.
+        """
+        try:
+            data = await request_wildcard(site=Booru.tbib_wildcard, query=query)
+            return better_object(data)
 
         except Exception as e:
             raise Exception(f"Failed to get data: {e}")
+                
+

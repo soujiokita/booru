@@ -1,8 +1,8 @@
 import re
-import aiohttp
 from typing import Union
-from ..utils.parser import Api, better_object, parse_image_danbooru, get_hostname
-from random import shuffle, randint
+from ..utils.fetch import request, request_wildcard, roll
+from ..utils.constant import Api, better_object, parse_image_danbooru, get_hostname
+from random import shuffle
 
 Booru = Api()
 
@@ -16,7 +16,10 @@ class Danbooru(object):
         Search and gets images from danbooru.
 
     search_image : function
-        Gets images, image urls only from danbooru.
+        Search and gets images from danbooru, but only returns image.
+
+    find_tags : function
+        Get the proper tags from danbooru.
 
     """
 
@@ -54,7 +57,7 @@ class Danbooru(object):
             Your user ID, which is accessible on the account options/profile page.
         """
 
-        if api_key =="" and login == "":
+        if api_key == "" and login == "":
             self.api_key = None
             self.login = None
             self.specs = {}
@@ -62,8 +65,6 @@ class Danbooru(object):
             self.api_key = api_key
             self.login = login
             self.specs = {"api_key": self.api_key, "login": self.login}
-
-        
 
     async def search(
         self,
@@ -73,7 +74,7 @@ class Danbooru(object):
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -> Union[aiohttp.ClientResponse, str]:
+    ) -> Union[list, str, None]:
 
         """Search method
 
@@ -102,40 +103,25 @@ class Danbooru(object):
 
         elif block and re.findall(block, query):
             raise ValueError(Booru.error_handling_sameval)
-            
+
         self.query = query
         self.specs["tags"] = self.query
         self.specs["limit"] = limit
         self.specs["page"] = page
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(Booru.danbooru, params=self.specs) as resp:
-                self.data = await resp.json(content_type=None)
-                self.final = self.data
+        raw_data = await request(site=Booru.danbooru, params_x=self.specs, block=block)
+        self.appended = Danbooru.append_object(raw_data)
 
-                for i in range(len(self.final)):
-                    self.final[i]["tag_string"] = self.final[i]["tag_string"].split(" ")
-
-                self.final = [i for i in self.final if not any(j in block for j in i["tag_string"])]
-
-                if not self.final:
-                    raise ValueError(Booru.error_handling_null)
-
-                self.not_random = Danbooru.append_object(self.final)
-                shuffle(self.not_random)
-
-                try:
-                    if gacha:
-                        return better_object(self.not_random[randint(0, len(self.not_random))])
-
-                    elif random:
-                        return better_object(self.not_random)
-
-                    else:
-                        return better_object(Danbooru.append_object(self.final))
-
-                except Exception as e:
-                    raise ValueError(f"Failed to get data: {e}")
+        try:
+            if gacha:
+                return better_object(roll(self.appended))
+            elif random:
+                shuffle(self.appended)
+                return better_object(self.appended)
+            else:
+                return better_object(Danbooru.append_object(self.appended))
+        except Exception as e:
+            raise Exception(f"Failed to get data: {e}")
 
     async def search_image(
         self, query: str, block: str = "", limit: int = 100, page: int = 1
@@ -158,7 +144,6 @@ class Danbooru(object):
         -------
         dict
             The json object (as string, you may need booru.resolve())
-
         """
 
         if limit > 1000:
@@ -172,21 +157,33 @@ class Danbooru(object):
         self.specs["limit"] = limit
         self.specs["page"] = page
 
+        raw_data = await request(site=Booru.danbooru, params_x=self.specs, block=block)
+        self.appended = Danbooru.append_object(raw_data)
+
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(Booru.danbooru, params=self.specs) as resp:
-                    self.data = await resp.json(content_type=None)
-            
-                    self.final = self.data
-                    
-                    for i in range(len(self.final)):
-                        self.final[i]["tag_string"] = self.final[i]["tag_string"].split(" ")
+            return better_object(parse_image_danbooru(self.appended))
+        except Exception as e:
+            raise Exception(f"Failed to get data: {e}")
 
-                    self.final = [i for i in self.final if not any(j in block for j in i["tag_string"])]
+    async def find_tags(site: str, query: str) -> Union[list, str, None]:
+        """Find tags
 
-                    self.not_random = parse_image_danbooru(self.final)
-                    shuffle(self.not_random)
-                    return better_object(self.not_random)
+        Parameters
+        ----------
+        site : str
+            The site to search for.
+        query : str
+            The tag to search for.
+
+        Returns
+        -------
+        list
+            The list of tags.
+        """
+        try:
+            data = await request_wildcard(site=Booru.danbooru_wildcard, query=query)
+            return better_object(data)
 
         except Exception as e:
-            raise ValueError(f"Failed to get data: {e}")
+            raise Exception(f"Failed to get data: {e}")
+

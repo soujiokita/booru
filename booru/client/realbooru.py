@@ -1,8 +1,8 @@
 import re
-import aiohttp
 from typing import Union
-from random import shuffle, randint
-from ..utils.parser import Api, better_object, parse_image, get_hostname
+from random import shuffle
+from ..utils.fetch import request, request_wildcard, roll
+from ..utils.constant import Api, better_object, parse_image, get_hostname
 
 Booru = Api()
 
@@ -16,7 +16,10 @@ class Realbooru(object):
         Search and gets images from realbooru.
 
     search_image : function
-        Gets images, image urls only from realbooru.
+        Search and gets images from realbooru, but only returns image.
+
+    find_tags : function
+        Get the proper tags from realbooru.
 
     """
 
@@ -43,7 +46,6 @@ class Realbooru(object):
                     "post_url"
                 ] = f"{get_hostname(Booru.realbooru)}/index.php?page=post&s=view&id={raw_object[i]['id']}"
 
-        
             elif not raw_object[i]["directory"]:
                 raw_object[i][
                     "file_url"
@@ -51,7 +53,7 @@ class Realbooru(object):
                 raw_object[i][
                     "post_url"
                 ] = f"{get_hostname(Booru.realbooru)}/index.php?page=post&s=view&id={raw_object[i]['id']}"
-                
+
                 raw_object[i][
                     "directory"
                 ] = f"{raw_object[i]['image'][0:2]}/{raw_object[i]['image'][2:4]}"
@@ -70,10 +72,10 @@ class Realbooru(object):
         Parameters
         ----------
         api_key : str
-            Your API Key which is accessible within your account options page
+            Your API Key (If possible)
 
         user_id : str
-            Your user ID, which is accessible on the account options/profile page.
+            Your user ID (If possible)
         """
 
         if api_key and user_id == "":
@@ -93,7 +95,7 @@ class Realbooru(object):
         page: int = 1,
         random: bool = True,
         gacha: bool = False,
-    ) -> Union[aiohttp.ClientResponse, str]:
+    ) -> Union[list, str, None]:
 
         """Search method
 
@@ -108,7 +110,7 @@ class Realbooru(object):
         page : int
             Expected number of page.
         random : bool
-            Shuffle the whole dict, default is True.
+            Shuffle the whole dict, default is False.
         gacha : bool
             Get random single object, limit property will be ignored.
 
@@ -129,39 +131,23 @@ class Realbooru(object):
         self.specs["pid"] = page
         self.specs["json"] = "1"
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(Booru.realbooru, params=self.specs) as resp:
-                self.data = await resp.json(content_type=None)
-                if not self.data:
-                    raise ValueError(Booru.error_handling_null)
+        raw_data = await request(site=Booru.realbooru, params_x=self.specs, block=block)
+        self.appended = Realbooru.append_object(raw_data)
 
-                self.final = self.data
-                for i in range(len(self.final)):
-                    self.final[i]["tags"] = self.final[i]["tags"].split(" ")
-
-                self.final = [
-                    i for i in self.final if not any(j in block for j in i["tags"])
-                ]
-
-                self.not_random = Realbooru.append_object(self.final)
-                shuffle(self.not_random)
-
-                try:
-                    if gacha:
-                        return better_object(
-                            self.not_random[randint(0, len(self.not_random))]
-                        )
-                    elif random:
-                        return better_object(self.not_random)
-                    else:
-                        return better_object(Realbooru.append_object(self.final))
-
-                except Exception as e:
-                    raise Exception(f"Failed to get data: {e}")
+        try:
+            if gacha:
+                return better_object(roll(self.appended))
+            elif random:
+                shuffle(self.appended)
+                return better_object(self.appended)
+            else:
+                return better_object(Realbooru.append_object(self.appended))
+        except Exception as e:
+            raise Exception(f"Failed to get data: {e}")
 
     async def search_image(
         self, query: str, block: str = "", limit: int = 100, page: int = 1
-    ) -> Union[aiohttp.ClientResponse, str, None]:
+    ) -> Union[list, str, None]:
 
         """Parses image only
 
@@ -194,24 +180,32 @@ class Realbooru(object):
         self.specs["pid"] = page
         self.specs["json"] = "1"
 
+        raw_data = await request(site=Booru.realbooru, params_x=self.specs, block=block)
+        self.appended = Realbooru.append_object(raw_data)
+
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(Booru.realbooru, params=self.specs) as resp:
-                    self.data = await resp.json(content_type=None)
-                    if not self.data:
-                        raise ValueError(Booru.error_handling_null)
-                    self.final = self.data
+            return better_object(parse_image(self.appended))
+        except Exception as e:
+            raise Exception(f"Failed to get data: {e}")
 
-                    for i in range(len(self.final)):
-                        self.final[i]["tags"] = self.final[i]["tags"].split(" ")
+    async def find_tags(site: str, query: str) -> Union[list, str, None]:
+        """Find tags
 
-                    self.final = [
-                        i for i in self.final if not any(j in block for j in i["tags"])
-                    ]
+        Parameters
+        ----------
+        site : str
+            The site to search for.
+        query : str
+            The tag to search for.
 
-                    self.not_random = parse_image(Realbooru.append_object(self.final))
-                    shuffle(self.not_random)
-                    return better_object(self.not_random)
+        Returns
+        -------
+        list
+            The list of tags.
+        """
+        try:
+            data = await request_wildcard(site=Booru.realbooru_wildcard, query=query)
+            return better_object(data)
 
         except Exception as e:
             raise Exception(f"Failed to get data: {e}")
