@@ -1,7 +1,7 @@
 # Booru
 Python bindings for Booru imageboards
 
-<a href="http://sinkaroid.github.io/booru"><img align="right" src="https://cdn.discordapp.com/attachments/952117487166705747/961124440400351232/mataa.png" width="400"></a>
+<a href="http://sinkaroid.github.io/booru"><img align="right" src="https://cdn.discordapp.com/attachments/952117487166705747/961124440400351232/mataa.png" width="350"></a>
 
 - [Booru](#booru)
   - [Features](#features)
@@ -30,8 +30,8 @@ Python bindings for Booru imageboards
 <a href="https://github.com/sinkaroid/booru/actions/workflows/api.yml"><img src="https://github.com/sinkaroid/booru/actions/workflows/api.yml/badge.svg"></a>
 <a href="https://codeclimate.com/github/sinkaroid/booru/maintainability"><img src="https://api.codeclimate.com/v1/badges/c334d91994d1d84b8d7d/maintainability" /></a>
 
-Booru is un-official Python bindings for the imageboards.
-It is takes a much more functionalities to interacts with ease, out of the box, JSON friendly, and fully extendable. Handle 19 different booru ([quick-tests](#benchmark-quick-tests))
+Python bindings for the imageboards.
+It is takes a much more functionalities to interacts with ease, and fully extendable. Making your API request significantly tidier and easier to comprehend
 
 <b>
 <a href="https://github.com/sinkaroid/booru/blob/master/CONTRIBUTING.md">Contributing</a> •
@@ -63,7 +63,7 @@ Speed or perfomace may not accurate because internet connection or server respon
 
 ### Benchmark quick tests
 
-| Booru                                       | Status                                                                                                                                                   | Get random | Tags block | Tags completion     | Get images     | Gacha     |
+| Booru                                       | Status                                                                                                                                                   | Random | Tags block | Tags finder     | Get images     | Gacha     |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ---------- | ----- | ----- | ----- | 
 | [Gelbooru](https://gelbooru.com/)           | [![status](https://github.com/soujiokita/booru/workflows/Gelbooru/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/gel.yml)            | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
 | [Danbooru](https://danbooru.donmai.us/)     | [![status](https://github.com/soujiokita/booru/workflows/Danbooru/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/danbo.yml)  | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
@@ -77,13 +77,13 @@ Speed or perfomace may not accurate because internet connection or server respon
 | [Konachan](https://konachan.com/)           | [![status](https://github.com/soujiokita/booru/workflows/Konachan/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/kona.yml)    | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
 | [Konachan.net](https://konachan.net/)       | [![status](https://github.com/soujiokita/booru/workflows/KonachanNet/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/konanet.yml) | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
 | [Hypnohub](https://hypnohub.net/)           | [![status](https://github.com/soujiokita/booru/workflows/Hypnohub/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/hypno.yml)  | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
-| [E621](https://e621.net/)                   | [![status](https://github.com/soujiokita/booru/workflows/E621/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/e6.yml)     | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
-| [E926](https://e926.net/)                   | [![status](https://github.com/soujiokita/booru/workflows/E926/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/e9.yml)     | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
-| [Derpibooru](https://derpibooru.org/)       | [![status](https://github.com/soujiokita/booru/workflows/Derpibooru/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/derpi.yml)   | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
-| [Furbooru](https://furbooru.org/)           | [![status](https://github.com/soujiokita/booru/workflows/Furbooru/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/fur.yml)     | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
+| [E621](https://e621.net/)                   | [![status](https://github.com/soujiokita/booru/workflows/E621/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/e6.yml)     | `Yes`      | `No`      | `No` | `Yes` | `Yes` | 
+| [E926](https://e926.net/)                   | [![status](https://github.com/soujiokita/booru/workflows/E926/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/e9.yml)     | `Yes`      | `No`      | `No` | `Yes` | `Yes` | 
+| [Derpibooru](https://derpibooru.org/)       | [![status](https://github.com/soujiokita/booru/workflows/Derpibooru/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/derpi.yml)   | `Yes`      | `No`      | `No` | `Yes` | `Yes` | 
+| [Furbooru](https://furbooru.org/)           | [![status](https://github.com/soujiokita/booru/workflows/Furbooru/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/fur.yml)     | `Yes`      | `No`      | `No` | `Yes` | `Yes` | 
 | [ATFbooru](https://booru.allthefallen.moe/) | [![status](https://github.com/soujiokita/booru/workflows/ATFbooru/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/atf.yml)    | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
-| [Behoimi](http://behoimi.org/)              | [![status](https://github.com/soujiokita/booru/workflows/Behoimi/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/behoi.yml)   | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
-| [Paheal](https://rule34.paheal.net/)        | [![status](https://github.com/soujiokita/booru/workflows/Paheal/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/paheal.yml)     | `Yes`      | `Yes`      | `Yes` | `Yes` | `Yes` | 
+| [Behoimi](http://behoimi.org/)              | [![status](https://github.com/soujiokita/booru/workflows/Behoimi/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/behoi.yml)   | `Yes`      | `No`      | `No` | `Yes` | `Yes` | 
+| [Paheal](https://rule34.paheal.net/)        | [![status](https://github.com/soujiokita/booru/workflows/Paheal/badge.svg)](https://github.com/sinkaroid/booru/actions/workflows/paheal.yml)     | `Yes`      | `No`      | `No` | `Yes` | `Yes` | 
 
 ## Usage
 This lib should be run in async context, and it's recommended to use [asyncio](https://docs.python.org/3/library/asyncio.html)
