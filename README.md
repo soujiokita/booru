@@ -1,7 +1,7 @@
 # Booru
 Python bindings for Booru imageboards
 
-<a href="http://sinkaroid.github.io/booru"><img align="right" src="https://cdn.discordapp.com/attachments/952117487166705747/961124440400351232/mataa.png" width="350"></a>
+<a href="http://sinkaroid.github.io/booru"><img align="right" src="https://cdn.discordapp.com/attachments/952117487166705747/961124440400351232/mataa.png" width="400"></a>
 
 - [Booru](#booru)
   - [Features](#features)
@@ -17,12 +17,7 @@ Python bindings for Booru imageboards
       - [Armored search](#armored-search)
       - [Gacha-like](#gacha-like)
       - [Import you want to use](#import-you-want-to-use)
-      - [Shuffle the whole dictionary](#shuffle-the-whole-dictionary)
-  - [Unresolved JSON](#unresolved-json)
   - [Documentation](#documentation)
-  - [Limitations](#limitations)
-  - [Acknowledgements](#acknowledgements)
-  - [Legal](#legal)
 
 <div align="center">
 
