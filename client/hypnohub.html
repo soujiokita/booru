@@ -28,7 +28,7 @@
 </summary>
 <pre><code class="python">import re
 from typing import Union
-from ..utils.fetch import request, roll
+from ..utils.fetch import request, request_wildcard, roll
 from ..utils.constant import Api, better_object, parse_image, get_hostname
 from random import shuffle
 
@@ -45,6 +45,9 @@ class Hypnohub(object):
 
     search_image : function
         Search and gets images from hypnohub, but only returns image.
+
+    find_tags : function
+        Get the proper tags from hypnohub.
 
     &#34;&#34;&#34;
 
@@ -189,6 +192,28 @@ class Hypnohub(object):
 
         try:
             return better_object(parse_image(self.appended))
+        except Exception as e:
+            raise Exception(f&#34;Failed to get data: {e}&#34;)
+
+    async def find_tags(site: str, query: str) -&gt; Union[list, str, None]:
+        &#34;&#34;&#34;Find tags
+
+        Parameters
+        ----------
+        site : str
+            The site to search for.
+        query : str
+            The tag to search for.
+
+        Returns
+        -------
+        list
+            The list of tags.
+        &#34;&#34;&#34;
+        try:
+            data = await request_wildcard(site=Booru.hypnohub_wildcard, query=query)
+            return better_object(data)
+
         except Exception as e:
             raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
 </details>
@@ -213,6 +238,8 @@ class Hypnohub(object):
 Search and gets images from hypnohub.</p>
 <p>search_image : function
 Search and gets images from hypnohub, but only returns image.</p>
+<p>find_tags : function
+Get the proper tags from hypnohub.</p>
 <p>Initializes hypnohub.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -235,6 +262,9 @@ Search and gets images from hypnohub, but only returns image.</p>
 
     search_image : function
         Search and gets images from hypnohub, but only returns image.
+
+    find_tags : function
+        Get the proper tags from hypnohub.
 
     &#34;&#34;&#34;
 
@@ -379,6 +409,28 @@ Search and gets images from hypnohub, but only returns image.</p>
 
         try:
             return better_object(parse_image(self.appended))
+        except Exception as e:
+            raise Exception(f&#34;Failed to get data: {e}&#34;)
+
+    async def find_tags(site: str, query: str) -&gt; Union[list, str, None]:
+        &#34;&#34;&#34;Find tags
+
+        Parameters
+        ----------
+        site : str
+            The site to search for.
+        query : str
+            The tag to search for.
+
+        Returns
+        -------
+        list
+            The list of tags.
+        &#34;&#34;&#34;
+        try:
+            data = await request_wildcard(site=Booru.hypnohub_wildcard, query=query)
+            return better_object(data)
+
         except Exception as e:
             raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
 </details>
@@ -429,6 +481,50 @@ def append_object(raw_object: dict):
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="booru.client.hypnohub.Hypnohub.find_tags"><code class="name flex">
+<span>async def <span class="ident">find_tags</span></span>(<span>site: str, query: str) ‑> Union[list, str, ForwardRef(None)]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Find tags</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>site</code></strong> :&ensp;<code>str</code></dt>
+<dd>The site to search for.</dd>
+<dt><strong><code>query</code></strong> :&ensp;<code>str</code></dt>
+<dd>The tag to search for.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>The list of tags.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def find_tags(site: str, query: str) -&gt; Union[list, str, None]:
+    &#34;&#34;&#34;Find tags
+
+    Parameters
+    ----------
+    site : str
+        The site to search for.
+    query : str
+        The tag to search for.
+
+    Returns
+    -------
+    list
+        The list of tags.
+    &#34;&#34;&#34;
+    try:
+        data = await request_wildcard(site=Booru.hypnohub_wildcard, query=query)
+        return better_object(data)
+
+    except Exception as e:
+        raise Exception(f&#34;Failed to get data: {e}&#34;)</code></pre>
+</details>
+</dd>
 <dt id="booru.client.hypnohub.Hypnohub.search"><code class="name flex">
 <span>async def <span class="ident">search</span></span>(<span>self, query: str, block: str = '', limit: int = 100, page: int = 1, random: bool = True, gacha: bool = False) ‑> Union[list, str, ForwardRef(None)]</span>
 </code></dt>
@@ -608,6 +704,7 @@ def append_object(raw_object: dict):
 <h4><code><a title="booru.client.hypnohub.Hypnohub" href="#booru.client.hypnohub.Hypnohub">Hypnohub</a></code></h4>
 <ul class="">
 <li><code><a title="booru.client.hypnohub.Hypnohub.append_object" href="#booru.client.hypnohub.Hypnohub.append_object">append_object</a></code></li>
+<li><code><a title="booru.client.hypnohub.Hypnohub.find_tags" href="#booru.client.hypnohub.Hypnohub.find_tags">find_tags</a></code></li>
 <li><code><a title="booru.client.hypnohub.Hypnohub.search" href="#booru.client.hypnohub.Hypnohub.search">search</a></code></li>
 <li><code><a title="booru.client.hypnohub.Hypnohub.search_image" href="#booru.client.hypnohub.Hypnohub.search_image">search_image</a></code></li>
 </ul>
