@@ -13,9 +13,11 @@ Python bindings for Booru imageboards
       - [search](#search)
       - [get_image](#get-image)
       - [find_tags](#find_tags)
-  - [resolve()](#resolve)
+  - [booru.resolve()](#booruresolve)
   - [Import specific booru client](#search)
   - [Testing cases](https://github.com/sinkaroid/booru/actions)
+      - [Core](https://github.com/sinkaroid/booru/actions)
+      - [Tags completion](https://github.com/soujiokita/booru/actions/workflows/find_tags.yml)
   - [Documentation](#documentation)
   - [Legal](#legal)  
 
@@ -141,6 +143,9 @@ Returns
 
 ## booru.resolve()
 You will need this for every object, this library designed to be neat and clean returns, although it must be reparsed to the string first, that's why `booru.resolve()` exist.
+
+## Documentation
+The documentation can be found https://sinkaroid.github.io/booru
 
 ## Legal
 This tool can be freely copied, modified, altered, distributed without any attribution whatsoever. However, if you feel
