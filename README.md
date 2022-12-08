@@ -5,15 +5,17 @@ Python bindings for Booru imageboards
 
 - [Booru](#booru)
   - [Features](#features)
-  - [This library vs. the Competition](#this-library-vs-the-competition)
-    - [Benchmark quick tests](#benchmark-quick-tests)
+  - [Features availability](#this-library-vs-the-competition)
   - [Usage](#usage)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
-    - [Quick example](#quick-example)
+    - [Example](#example)
       - [search](#search)
-      - [get image](#get-image)
-      - [get image](#get-image)
+      - [get_image](#get-image)
+      - [find_tags](#find_tags)
+  - [resolve()](#resolve)
+  - [Import specific booru client](#search)
+  - [Testing cases](https://github.com/sinkaroid/booru/actions)
   - [Documentation](#documentation)
   - [Legal](#legal)  
 
@@ -34,8 +36,8 @@ It is takes a much more functionalities to interacts with ease, and featureful. 
 <a href="https://github.com/sinkaroid/booru/issues/new/choose">Report Issues</a>
 </b>
 </div>
-<br>
 
+----
 
 
 ## Features
@@ -137,6 +139,8 @@ Returns
 - No more sussy tags, use this for validating query in related imageboards. 
 - Get the `get_proper_tags[0]` for the best predicts.
 
+## booru.resolve()
+You will need this for every object, this library designed to be neat and clean returns, although it must be reparsed to the string first, that's why `booru.resolve()` exist.
 
 ## Legal
 This tool can be freely copied, modified, altered, distributed without any attribution whatsoever. However, if you feel
