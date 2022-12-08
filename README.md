@@ -51,7 +51,7 @@ It is takes a much more functionalities to interacts with ease, and featureful. 
 - Easy to use, check your intelisense
 
 ## Usage
-Async context, and it's recommended use [asyncio](https://docs.python.org/3/library/asyncio.html), The documentation: https://sinkaroid.github.io/booru
+Async context, and it's recommended use [asyncio](https://docs.python.org/3/library/asyncio.html) / https://sinkaroid.github.io/booru
 
 ### Prerequisites
 <table>
@@ -116,15 +116,29 @@ some_booru = Rule34()
 ### **search_image()**
 Takes parameter `search_image(query: str, block: str = "", limit: int = 100, page: int = 1)`
 ```py
-res = await dan.search_image(query="cat_girl", limit=50)
-print(res)
+import asyncio
+from booru import Rule34
+
+async def main():
+    r34 = Rule34()
+    img = await r34.search(query="cat_girl", block="futanari")
+    print(img)
+
+asyncio.run(main())
 ```  
 - This will parses image url only, instead object
 
 ### **find_tags()**
 ```py
-get_proper_tags = await dan.find_tags(query="jeanne")
-print(get_proper_tags)
+import asyncio
+from booru import Danbooru
+
+async def main():
+    dan = Danbooru()
+    find_tags = await dan.find_tags("jeanne") ## arbitrary tags
+    print(find_tags)
+
+asyncio.run(main())
 ```
 Returns
 ```js
